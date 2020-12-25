@@ -1,0 +1,12 @@
+.idea/
+### Python ###
+__pycache__/
+*.py[cod]
+*$py.class
+
+.env
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
