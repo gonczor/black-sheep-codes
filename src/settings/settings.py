@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
 
+    'auth_ex',
     'courses',
     'frontend',
 ]
@@ -112,6 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+AUTH_USER_MODEL = 'auth_ex.User'
 
 
 # Internationalization
