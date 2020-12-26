@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'djoser',
     'rest_framework',
+    'rest_framework.authtoken',
 
     'auth_ex',
     'courses',
@@ -138,3 +140,15 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+
+# DRF
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
+DJOSER = {
+    'USER_CREATE_PASSWORD_RETYPE': True
+}
