@@ -3,6 +3,18 @@
 <head></head>
 <body>
     <h1 onclick="main()">Hello, world!</h1>
+    <form id="signInForm">
+        <p>Create an account</p>
+        <p><label for="username">Username:</label></p>
+        <p><input type="text" name="username" id="username"></p>
+        <p><label for="email">Email::</label></p>
+        <p><input type="email" name="email" id="email"></p>
+        <p><label for="password">Password:</label></p>
+        <p><input type="password" name="password" id="password"></p>
+        <p><label for="re_password">Confirm:</label></p>
+        <p><input type="password" name="re_password" id="re_password"></p>
+        <p><input type="submit" value="Sign Up!"></p>
+    </form>
     {% load static %}
     <link rel="stylesheet" href="{% static 'main.css' %}">
     <script src="{% static 'main.js' %}"></script>
