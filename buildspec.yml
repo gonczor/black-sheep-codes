@@ -1,0 +1,33 @@
+version: 0.2
+
+env:
+  variables:
+    POSTGRES_DB: "postgres"
+    POSTGRES_USER: "postgres"
+    POSTGRES_PASSWORD: "postgres"
+    POSTGRES_HOST: "localhost"
+    SECRET_KEY: "secret"
+    DEBUG: "True"
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+      - pip install docker-compose
+  pre_build:
+    commands:
+      - cp .env.example .env
+      - docker-compose build web
+      - docker images
+      # - docker-compose up -d db
+      # - pip install --no-cache-dir -r requirements.txt
+  build:
+    commands:
+      # - python src/manage.py test
+      - docker-compose run web python manage.py test
+  post_build:
+    commands:
+      - docker-compose down
