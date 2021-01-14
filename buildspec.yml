@@ -13,10 +13,13 @@ phases:
       - cp .env.example .env
       - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - docker-compose build web
-      - docker images
   build:
     commands:
       - docker-compose run web python manage.py test
+      - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 941606308749.dkr.ecr.eu-central-1.amazonaws.com
+      - docker build -f docker/Dockerfile -t blacksheeplearns .
+      - docker tag blacksheeplearns:latest 941606308749.dkr.ecr.eu-central-1.amazonaws.com/blacksheeplearns:latest
+      - docker push 941606308749.dkr.ecr.eu-central-1.amazonaws.com/blacksheeplearns:latest
   post_build:
     commands:
       - docker-compose down
