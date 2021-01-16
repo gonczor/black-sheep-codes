@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Black Sheep Learns</title>
-</head>
-<body>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'main.css' %}">
-</body>
-</html>
+{% extends base.html %}
+{% block content %}
+    <form id="loginForm">
+        <p>Login</p>
+        <p><label for="username">Username:</label></p>
+        <p><input type="text" name="username" id="username"></p>
+        <p><label for="password">Password:</label></p>
+        <p><input type="password" name="password" id="password"></p>
+        <p><input type="submit" value="Sign Up!"></p>
+    </form>
+{% endblock content %}
+{% block scripts %}
+    <script src="{% static 'auth.js' %}"></script>
+{% endblock scripts %}
