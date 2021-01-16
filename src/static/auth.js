@@ -39,6 +39,8 @@ window.addEventListener( "load", function () {
         }
         alert( message );
       } else {
+        const response = JSON.parse(event.target.response);
+        window.localStorage.setItem('token', response.auth_token);
         window.location = '/courses/'
       }
     });
@@ -47,20 +49,24 @@ window.addEventListener( "load", function () {
       alert( 'Oops! Something went wrong.' );
     });
 
-    XHR.open( "POST", "/api/v1/auth/" );
+    XHR.open( "POST", "/api/v1/auth/token/login/" );
     XHR.setRequestHeader('Content-Type', 'application/json;');
     const data = Object.fromEntries(FD.entries());
     XHR.send(JSON.stringify(data));
   }
 
   const accountCreationForm = document.getElementById( "accountCreationForm" );
-  accountCreationForm.addEventListener( "submit", function ( event ) {
-    event.preventDefault();
-    performAccountCreation();
-  });
+  if (accountCreationForm !== null){
+    accountCreationForm.addEventListener( "submit", function ( event ) {
+      event.preventDefault();
+      performAccountCreation();
+    });
+  }
   const loginForm = document.getElementById( "loginForm" );
-  loginForm.addEventListener( "submit", function ( event ) {
-    event.preventDefault();
-    performLogin();
-  });
+  if (loginForm !== null) {
+    loginForm.addEventListener( "submit", function ( event ) {
+      event.preventDefault();
+      performLogin();
+    });
+  }
 });
