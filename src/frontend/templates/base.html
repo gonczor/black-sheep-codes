@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Black Sheep Learns</title>
+</head>
+<body>
+    {% block content %}
+    {% endblock content %}
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    {% block scripts %}
+    {% endblock scripts %}
+</body>
+</html>
