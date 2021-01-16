@@ -1,4 +1,4 @@
-{% extends base.html %}
+{% extends 'base.html' %}
 {% block content %}
     <form id="accountCreationForm">
         <p>Create an account</p>
@@ -14,5 +14,6 @@
     </form>
 {% endblock content %}
 {% block scripts %}
+    {% load static %}
     <script src="{% static 'auth.js' %}"></script>
 {% endblock scripts %}
