@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework',
     'rest_framework.authtoken',
+    'storages',
 
     'auth_ex',
     'courses',
@@ -136,10 +137,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default=None)
+if AWS_STORAGE_BUCKET_NAME is not None:
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+        'ServerSideEncryption': 'AES256',
+    }
+    AWS_LOCATION = 'static'
+
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static')
+    ]
 
 
 # DRF
