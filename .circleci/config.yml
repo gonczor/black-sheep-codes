@@ -21,7 +21,7 @@ jobs:
     steps:
       - checkout
       - run: cp .env.example .env
-      - run: docker-compose run web test
+      - run: sudo docker-compose run web test
 
 workflows:
   main:
