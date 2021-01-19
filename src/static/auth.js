@@ -40,7 +40,7 @@ window.addEventListener( "load", function () {
         alert( message );
       } else {
         const response = JSON.parse(event.target.response);
-        window.localStorage.setItem('token', response.auth_token);
+        window.localStorage.setItem('token', response.authToken);
         window.location = '/courses/'
       }
     });
