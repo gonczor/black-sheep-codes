@@ -16,6 +16,9 @@ phases:
       - docker build -f docker/Dockerfile -t blacksheeplearns .
       - docker tag blacksheeplearns:latest 941606308749.dkr.ecr.eu-central-1.amazonaws.com/blacksheeplearns:latest
       - docker push 941606308749.dkr.ecr.eu-central-1.amazonaws.com/blacksheeplearns:latest
+  post_build:
+    commands:
+      - docker logout
 
 artifacts:
     files:
