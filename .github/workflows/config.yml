@@ -1,0 +1,11 @@
+name: Test
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy configs
+        run: cp .env.example .env
+      - name: Test
+        run: docker-compose run web python manage.py test
