@@ -15,7 +15,8 @@ from pathlib import Path
 import environ
 
 env = environ.Env(
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    ROLLBAR_ENABLED=(bool, False)
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -163,3 +164,16 @@ REST_FRAMEWORK = {
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
 }
+
+
+if env('ROLLBAR_ENABLED', default=False):
+    ROLLBAR = {
+        'access_token': env('ROLLBAR_KEY'),
+        'environment': 'development' if DEBUG else 'production',
+        'branch': 'master',
+        'enabled': True
+    }
+
+    MIDDLEWARE += [
+        'rollbar.contrib.django.middleware.RollbarNotifierMiddleware'
+    ]
