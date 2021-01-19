@@ -5,12 +5,21 @@ orbs:
 
 jobs:
   test:
-    executor: python/default
+    docker:
+      - image: circleci/python:3.9-alpine
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_TOKEN
+      - image: circleci/postgres:12-alpine
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_TOKEN
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
+      - run: docker-compose run web test
 
 workflows:
   main:
