@@ -20,6 +20,8 @@ jobs:
           POSTGRES_DB: postgres
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 19.03.13
       - run: cp .env.example .env
       - run: pip install docker-compose
       - run: sudo docker-compose run web python manage.py test
