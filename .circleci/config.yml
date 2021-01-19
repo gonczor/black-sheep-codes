@@ -8,11 +8,11 @@ jobs:
     docker:
       - image: circleci/python:3.9-alpine
         auth:
-          username: mydockerhub-user
+          username: gonczor
           password: $DOCKERHUB_TOKEN
       - image: circleci/postgres:12-alpine
         auth:
-          username: mydockerhub-user
+          username: gonczor
           password: $DOCKERHUB_TOKEN
         environment:
           POSTGRES_USER: postgres
