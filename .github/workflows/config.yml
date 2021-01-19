@@ -7,7 +7,5 @@ jobs:
       - uses: actions/checkout@v2
       - name: Copy configs
         run: cp .env.example .env
-      - name: Build the stack
-        run: docker-compose up -d
       - name: Test
-        run: docker-compose exec web python manage.py test
+        run: docker-compose run web python manage.py test
