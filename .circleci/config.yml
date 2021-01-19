@@ -19,6 +19,7 @@ jobs:
           POSTGRES_DB: postgres
     steps:
       - checkout
+      - run: cp .env.example .env
       - run: docker-compose run web test
 
 workflows:
