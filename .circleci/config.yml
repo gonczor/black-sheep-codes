@@ -21,7 +21,8 @@ jobs:
     steps:
       - checkout
       - run: cp .env.example .env
-      - run: sudo docker-compose run web test
+      - run: sudo ps | grep docker
+      - run: sudo docker-compose run web python manage.pytest
 
 workflows:
   main:
