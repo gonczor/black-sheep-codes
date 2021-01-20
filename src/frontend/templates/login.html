@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form id="loginForm">
-        <p>Login</p>
-        <p><label for="username">Username:</label></p>
-        <p><input type="text" name="username" id="username"></p>
-        <p><label for="password">Password:</label></p>
-        <p><input type="password" name="password" id="password"></p>
-        <p><input type="submit" value="Sign Up!"></p>
-    </form>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-3">
+            {% include 'login_form.html' %}
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+</div>
+   
 {% endblock content %}
 {% block scripts %}
     {% load static %}
