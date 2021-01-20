@@ -1,17 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form id="accountCreationForm">
-        <p>Create an account</p>
-        <p><label for="username">Username:</label></p>
-        <p><input type="text" name="username" id="username"></p>
-        <p><label for="email">Email:</label></p>
-        <p><input type="email" name="email" id="email"></p>
-        <p><label for="password">Password:</label></p>
-        <p><input type="password" name="password" id="password"></p>
-        <p><label for="rePassword">Confirm:</label></p>
-        <p><input type="password" name="rePassword" id="rePassword"></p>
-        <p><input type="submit" value="Sign Up!"></p>
-    </form>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="border rounded p-2 m-2">
+                <div>
+                    <p class="greetings">
+                        Hi!
+                    </p>
+                    <p class="greetings">
+                        I'm happy to see you here.
+                    </p>
+                    <p class="greetings">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </p>
+                </div>
+                <div align="center">
+                    <video controls width="250px">
+                        <source src="https://mdbootstrap.com/img/video/Lines.mp4" type="video/mp4" />
+                    </video>
+                </div>
+                <div>
+                    <p class="greetings">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            {% include 'login_form.html' %}
+        </div>
+        <div class="col-lg-3">
+            {% include 'signup_form.html' %}
+        </div>
+    </div>
+</div>
 {% endblock content %}
 {% block scripts %}
     {% load static %}

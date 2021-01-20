@@ -2,12 +2,61 @@
 <html>
 <head>
     <title>Black Sheep Learns</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    {% block content %}
-    {% endblock content %}
-
     {% load static %}
+    <!-- Header -->
+    <div class="header bg-blue p-3 container-fluid">
+        <div class="row">
+            <div class="col-md-11">
+                <div class="pl-3">
+                    <img src="{% static 'icons/graduation-cap.svg' %}" width="16" height="16" class="bi bi-github"></img>
+                    Black Sheep Learns
+                </div>
+            </div>
+            
+            <div class="col-md-1 text-right">
+                <a href="https://github.com/gonczor/black-sheep-learns" id="github-link">
+                    <img src="{% static 'icons/github.svg' %}" width="16" height="16" class="bi bi-github"></img>
+                </a>
+                <a href="https://twitter.com/" id="twitter-link">
+                    <img src="{% static 'icons/twitter.svg' %}" width="16" height="16" class="bi bi-github"></img>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid">
+        <div class="row">
+            <footer class="footer bg-blue text-center p-2">
+                <p>
+                    <span>
+                        Contact me:
+                        <a href="mailto:gonczor@blacksheep.pl">gonczor@blacksheep.pl</a>
+                    </span>
+                    <span class="p-1"> | </span>
+                    <span>
+                        <a href="https://github.com/gonczor/black-sheep-learns" id="github-link">
+                            View on GitHub:
+                            <img src="{% static 'icons/github.svg' %}" width="16" height="16" class="bi bi-github"></img>
+                        </a>
+                    </span>
+                </p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Static -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'main.css' %}">
     {% block scripts %}
     {% endblock scripts %}
