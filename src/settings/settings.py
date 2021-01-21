@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'storages',
 
     'auth_ex',
+    'aws',
     'courses',
     'frontend',
 ]
