@@ -2,10 +2,26 @@
 
 {% block content %}
 {% verbatim %}
-    
-    <div id="hello-vue" class="demo">
-        {{ message }}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="p-2 m-2 border rounded">
+                <div id="courses-list">
+                    Available courses:
+                    <div v-for="course in courses">
+                        {{ course.name }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10">
+            <div class="p-2 m-2 border rounded">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </div>
+        </div>
     </div>
+</div>
 
 {% endverbatim %}
 {% endblock content %}
@@ -13,5 +29,6 @@
 {% block scripts %}
     {% load static %}
     <script src ="{% static 'js/vue.js' %}"></script>
+    <script src="{% static 'js/axios.min.js' %}"></script>
     <script src="{% static 'js/courses.js' %}"></script>
 {% endblock scripts %}
