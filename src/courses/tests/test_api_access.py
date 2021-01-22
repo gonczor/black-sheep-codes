@@ -48,3 +48,12 @@ class CoursesApiAccessTestCase(APITestCase):
         response = self.client.post(self.list_url, data={'name': 'test course'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_by_superuser(self):
+        self.user.is_superuser = True
+        self.user.save()
+        self.client.force_authenticate(self.user)
+
+        response = self.client.post(self.list_url, data={'name': 'test course'})
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
