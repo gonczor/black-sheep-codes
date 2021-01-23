@@ -1,3 +1,7 @@
 .course-element:hover {
     background-color: var(--primary-blue);
 }
+
+img {
+    max-width: 100%;
+}

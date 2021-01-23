@@ -19,7 +19,21 @@
         </div>
         <div class="col-lg-10">
             <div class="p-2 m-2 border rounded">
-                {{ courseDetails }}
+                <div class="container">
+                    <div class="row m-2">
+                        <div class="col-lg-2">
+                            <img :src="courseDetails.coverImage">
+                        </div>
+                        <div class="col-lg-10 text-center align-self-center">
+                            <h1>{{ courseDetails.name }}</h1>
+                        </div>
+                    </div>
+                    <div class="row m-2">
+                        <div class="col-lg-12">
+                            {{ courseDetails.description }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

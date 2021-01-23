@@ -27,7 +27,7 @@ const HelloVueApp = {
     data() {
         return {
             courses: [],
-            courseDetails: ''
+            courseDetails: {}
         }
     },
     mounted() {
