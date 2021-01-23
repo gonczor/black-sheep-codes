@@ -8,4 +8,4 @@ jobs:
       - name: Copy configs
         run: cp .env.example .env
       - name: Test
-        run: docker-compose run web python manage.py test
+        run: docker-compose run web python manage.py test --parallel
