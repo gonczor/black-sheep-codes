@@ -9,12 +9,25 @@ const HelloVueApp = {
                     }
                 }
             );
-            this.courses = response.data;
+            this.courses = response.data.results;
         },
+        async getCourseDetails(x){
+            const courseId = x.target.dataset.id;
+            const response = await axios.get(
+                '/api/v1/courses/' + courseId +'/',
+                {
+                    headers: {
+                        Authorization: 'Token ' + window.localStorage.token
+                    }
+                }
+            );
+            this.courseDetails = response.data;
+        }
     },
     data() {
         return {
-            courses: []
+            courses: [],
+            courseDetails: ''
         }
     },
     mounted() {
