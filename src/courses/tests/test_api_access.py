@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import signals
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from courses.models import Course
+from courses.signals import cover_image_resize_callback
 
 
 class CoursesApiAccessTestCase(APITestCase):
@@ -18,6 +20,8 @@ class CoursesApiAccessTestCase(APITestCase):
             email='test@example.com',
             password='test'
         )
+        # Disable signals
+        signals.post_save.disconnect(cover_image_resize_callback, sender=Course)
 
     def test_list_unauthenticated(self):
         response = self.client.get(self.list_url)
