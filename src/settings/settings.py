@@ -16,7 +16,8 @@ import environ
 
 env = environ.Env(
     DEBUG=(bool, False),
-    ROLLBAR_ENABLED=(bool, False)
+    ROLLBAR_ENABLED=(bool, False),
+    CELERY_ALWAYS_EAGER=(bool, False),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django_celery_results',
     'djoser',
     'rest_framework',
     'rest_framework.authtoken',
@@ -202,3 +204,10 @@ if env('ROLLBAR_ENABLED', default=False):
     MIDDLEWARE += [
         'rollbar.contrib.django.middleware.RollbarNotifierMiddleware'
     ]
+
+
+# Celery
+CELERY_ALWAYS_EAGER = env('CELERY_ALWAYS_EAGER')
+CELERY_BROKER_HOST = env('CELERY_BROKER_HOST')
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BROKER_URL = f'redis://{CELERY_BROKER_HOST}:6379/0'
