@@ -26,7 +26,7 @@ def test_task(course_id: int):
         new_image.save(output, format='JPEG')
         output.seek(0)
 
-        name_parts = course.cover_image.name.split('.')
+        name_parts = course.cover_image.name.split('/')[-1].split('.')
         name = ''.join(name_parts[:-1]) + '_small' + '.' + name_parts[-1]
         course.small_cover_image.save(name, output, save=False)
         course.save()
