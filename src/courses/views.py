@@ -14,7 +14,7 @@ class CourseViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, CoursesPermission]
 
     def get_serializer_class(self) -> Type[Serializer]:
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return CourseDetailSerializer
         else:
             return CourseSerializer

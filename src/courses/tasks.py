@@ -41,11 +41,11 @@ def _get_small_size(original_image: Image) -> tuple[int, int]:
     return new_width, new_height
 
 
-def _save_resized(new_image: Image, course: 'Course'):
+def _save_resized(new_image: Image, course: "Course"):
     output = io.BytesIO()
-    new_image.save(output, format='JPEG')
+    new_image.save(output, format="JPEG")
     output.seek(0)
-    name_parts = course.cover_image.name.split('/')[-1].split('.')
-    name = ''.join(name_parts[:-1]) + '_small' + '.' + name_parts[-1]
+    name_parts = course.cover_image.name.split("/")[-1].split(".")
+    name = "".join(name_parts[:-1]) + "_small" + "." + name_parts[-1]
     course.small_cover_image.save(name, output, save=False)
     course.save()

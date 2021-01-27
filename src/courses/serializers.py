@@ -6,13 +6,13 @@ from courses.models import Course
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ('id', 'name')
+        fields = ("id", "name")
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ('name', 'image', 'description')
+        fields = ("name", "image", "description")
 
     image = serializers.SerializerMethodField()
 

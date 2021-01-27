@@ -6,4 +6,4 @@ class User(AbstractUser):
     email = models.EmailField(blank=False, null=False)
 
     class Meta(AbstractUser.Meta):
-        swappable = 'AUTH_USER_MODEL'
+        swappable = "AUTH_USER_MODEL"

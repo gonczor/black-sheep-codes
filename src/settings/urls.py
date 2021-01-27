@@ -19,13 +19,12 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('', include('frontend.urls')),
-    path('admin/', admin.site.urls),
-    path('api/v1/auth/', include('djoser.urls')),
-    path('api/v1/auth/', include('djoser.urls.authtoken')),
-    path('api/v1/', include('courses.urls')),
+    path("", include("frontend.urls")),
+    path("admin/", admin.site.urls),
+    path("api/v1/auth/", include("djoser.urls")),
+    path("api/v1/auth/", include("djoser.urls.authtoken")),
+    path("api/v1/", include("courses.urls")),
 ]
 
 if not settings.AWS_STORAGE_BUCKET_NAME:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
