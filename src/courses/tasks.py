@@ -1,8 +1,8 @@
 import io
 from typing import TYPE_CHECKING
 
-from PIL import Image
 from celery import shared_task
+from PIL import Image
 
 if TYPE_CHECKING:
     from courses.models import Course
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 @shared_task
 def resize_course_cover_image(course_id: int):
     from django.db.models import signals
+
     from courses.models import Course
     from courses.signals import cover_image_resize_callback
 

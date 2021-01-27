@@ -6,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from courses.models import Course
 from courses.permissions import CoursesPermission
-from courses.serializers import CourseSerializer, CourseDetailSerializer
+from courses.serializers import CourseDetailSerializer, CourseSerializer
 
 
 class CourseViewSet(ModelViewSet):

@@ -1,4 +1,10 @@
-from django.db.models import ImageField, CharField, TextField, Model, DateTimeField
+from django.db.models import (
+    CharField,
+    DateTimeField,
+    ImageField,
+    Model,
+    TextField
+)
 from django.db.models.signals import post_save
 
 import courses.signals
