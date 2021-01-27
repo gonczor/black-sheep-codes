@@ -21,3 +21,5 @@ jobs:
         run: docker-compose build web
       - name: Isort
         run: docker-compose run web isort --check .
+      - name: Black
+        run: docker-compose run web black --check --diff .
