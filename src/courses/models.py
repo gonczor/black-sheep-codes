@@ -1,11 +1,11 @@
-from django.db.models import ImageField, CharField, TextField, Model, DateTimeField
+from django.db.models import CharField, DateTimeField, ImageField, Model, TextField
 from django.db.models.signals import post_save
 
 import courses.signals
 
 
-def get_course_upload_directory(course: 'Course', filename: str) -> str:
-    return f'images/courses/{course.id}/{filename}'
+def get_course_upload_directory(course: "Course", filename: str) -> str:
+    return f"images/courses/{course.id}/{filename}"
 
 
 class Course(Model):

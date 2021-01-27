@@ -4,6 +4,7 @@ from courses.models import Course
 
 
 class CourseAdmin(ModelAdmin):
-    list_display = ('name',)
+    list_display = ("name",)
+
 
 site.register(Course, CourseAdmin)
