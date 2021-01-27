@@ -1,4 +1,12 @@
-from django.db.models import CharField, DateTimeField, ImageField, Model, TextField
+from django.db.models import (
+    CASCADE,
+    CharField,
+    DateTimeField,
+    ForeignKey,
+    ImageField,
+    Model,
+    TextField,
+)
 from django.db.models.signals import post_save
 
 import courses.signals
@@ -15,6 +23,20 @@ class Course(Model):
     small_cover_image = ImageField(null=True, blank=True, upload_to=get_course_upload_directory)
     created = DateTimeField(auto_now_add=True)
     updated = DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.id})"
+
+
+class CourseSection(Model):
+    course = ForeignKey(Course, on_delete=CASCADE, related_name="course_sections")
+    name = CharField(max_length=64)
+
+    class Meta:
+        order_with_respect_to = "course"
+
+    def __str__(self):
+        return f"{self.name} ({self.id})"
 
 
 post_save.connect(courses.signals.cover_image_resize_callback, sender=Course)
