@@ -12,4 +12,12 @@ class CourseSerializer(serializers.ModelSerializer):
 class CourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ('name', 'cover_image', 'description')
+        fields = ('name', 'image', 'description')
+
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, course: Course) -> str:
+        if course.small_cover_image:
+            return course.small_cover_image.url
+        else:
+            return course.cover_image.url
