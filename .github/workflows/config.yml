@@ -9,3 +9,13 @@ jobs:
         run: cp .env.example .env
       - name: Test
         run: docker-compose run web python manage.py test --parallel
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy configs
+        run: cp .env.example .env
+      - name: Build Image
+        run: docker-compose build web
+      - name: Isort
+        run: docker-compose run web isort --check .
