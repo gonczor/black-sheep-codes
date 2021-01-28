@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import (
     CASCADE,
     CharField,
@@ -37,6 +38,14 @@ class CourseSection(Model):
 
     def __str__(self):
         return f"{self.name} ({self.id})"
+
+
+class CourseSignup(Model):
+    course = ForeignKey(Course, related_name="signups", on_delete=CASCADE)
+    user = ForeignKey(settings.AUTH_USER_MODEL, related_name="signups", on_delete=CASCADE)
+
+    class Meta:
+        unique_together = ("course", "user")
 
 
 post_save.connect(courses.signals.cover_image_resize_callback, sender=Course)
