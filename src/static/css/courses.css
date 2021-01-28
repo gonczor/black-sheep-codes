@@ -2,6 +2,15 @@
     background-color: var(--primary-blue);
 }
 
+.btn-signup:hover {
+    background-color: var(--secondary-blue);
+    box-shadow: 0 3px 3px var(--secondary-text-black);
+}
+
+.course-details-container {
+    min-height: 90pt;
+}
+
 img {
     max-width: 100%;
 }

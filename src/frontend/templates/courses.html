@@ -18,16 +18,22 @@
             </div>
         </div>
         <div class="col-lg-10">
-            <div class="p-2 m-2 border rounded">
-                <div class="container">
+            <div class="p-2 m-2 border rounded course-details-container">
+                <div class="container" v-if="hasDetails()">
                     <div class="row m-2">
-                        <div class="col-lg-2 text-center">
+                        <div class="col-lg-3 text-center">
                             <img :src="courseDetails.image">
                         </div>
-                        <div class="col-lg-10 text-center align-self-center">
+                        <div class="col-lg-6 text-center align-self-center">
                             <h1>{{ courseDetails.name }}</h1>
                         </div>
+                        <div class="col-lg-3 text-center align-self-center">
+                            <div >
+                                <button v-on:click="signUpForCourse" class="btn btn-signup hover-shadow bg-blue">Join Course</button>
+                            </div>
+                        </div>
                     </div>
+                    <hr>
                     <div class="row m-2">
                         <div class="col-lg-12">
                             {{ courseDetails.description }}
