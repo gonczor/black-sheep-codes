@@ -29,7 +29,7 @@ class SignupSerializer(serializers.ModelSerializer):
         UniqueTogetherValidator(
             queryset=CourseSignup.objects.all(),
             fields=["user", "course"],
-            message="Already signed up for this course."
+            message="Already signed up for this course.",
         )
     ]
 
