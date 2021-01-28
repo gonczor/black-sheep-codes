@@ -1,4 +1,5 @@
 const HelloVueApp = {
+    el: '#vueApp',
     methods: {
         async listCourses(){
             const response = await axios.get(
@@ -38,7 +39,9 @@ const HelloVueApp = {
                         },
                     }
                 );
-                console.log(response);
+                if(response.status === 201) {
+                    this.showSuccessfulSignupToast()
+                }
             } catch (error) {
                 let message = "";
                 if (error.response.data.nonFieldErrors === undefined){
@@ -52,13 +55,24 @@ const HelloVueApp = {
         },
         hasDetails() {
             return this.displaySignup;
-        }
+        },
+        showSuccessfulSignupToast() {
+            this.signupToast.className = "show";
+            setTimeout(
+        function(){
+                    this.signupToast.className = this.signupToast.className.replace("show", "");
+                },
+                3000
+            );
+
+        },
     },
     data() {
         return {
             courses: [],
             courseDetails: {},
             displaySignup: false,
+            signupToast: document.getElementById('signupToast')
         }
     },
     mounted() {
