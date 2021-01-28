@@ -12,7 +12,7 @@ class CourseSerializer(serializers.ModelSerializer):
 class CourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ("name", "image", "description")
+        fields = ("id", "name", "image", "description")
 
     image = serializers.SerializerMethodField()
 
