@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from courses.models import Course
+from courses.models import Course, CourseSignup
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -21,3 +21,9 @@ class CourseDetailSerializer(serializers.ModelSerializer):
             return course.small_cover_image.url
         else:
             return course.cover_image.url
+
+
+class SignupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseSignup
+        fields = ("user", "course",)

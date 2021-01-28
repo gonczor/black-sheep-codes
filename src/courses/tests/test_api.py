@@ -6,7 +6,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from courses.models import Course
+from common.tests import get_cover_image
+from courses.models import Course, CourseSignup
 from courses.signals import cover_image_resize_callback
 
 
@@ -59,3 +60,53 @@ class CoursesApiAccessTestCase(APITestCase):
         response = self.client.post(self.list_url, data={"name": "test course"})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+class CoursesSignupApiAccessTestCase(APITestCase):
+    def setUp(self):
+        super().setUp()
+        self.list_url = reverse("courses:course_signups-list")
+        User = get_user_model()
+        self.user = User.objects.create_user(
+            username="test", email="test@example.com", password="test"
+        )
+        self.course = Course.objects.create(
+            name="Test Course",
+            cover_image=get_cover_image()
+        )
+        self.data = {
+            "user": self.user.id,
+            "course": self.course.id
+        }
+
+    def test_unauthenticated_signup(self):
+        response = self.client.post(self.list_url, data=self.data)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_signup(self):
+        self.client.force_authenticate(self.user)
+
+        response = self.client.post(self.list_url, data=self.data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(
+            CourseSignup.objects.filter(user=self.user, course=self.course).exists()
+        )
+
+    def test_signup_for_the_same_course_second_time(self):
+        CourseSignup.objects.create(user=self.user, course=self.course)
+        self.client.force_authenticate(self.user)
+
+        response = self.client.post(self.list_url, data=self.data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.json(),
+            {
+                "nonFieldErrors": ["The fields course, user must make a unique set."]
+            }
+        )
+
+    def tearDown(self):
+        self.course.cover_image.delete()
