@@ -100,5 +100,48 @@ class CoursesSignupApiAccessTestCase(APITestCase):
             }
         )
 
+    def test_non_staff_access_to_different_user(self):
+        User = get_user_model()
+        other_user = User.objects.create_user(
+            username="other", email="other@example.com", password="test"
+        )
+        other_user_signup = CourseSignup.objects.create(user=other_user, course=self.course)
+        self.client.force_authenticate(self.user)
+
+        response = self.client.get(self.list_url)
+
+        self.assertNotIn(
+            other_user_signup.id,
+            [item["id"] for item in response.json()["results"]]
+        )
+
+    def test_non_staff_access_to_own_signups(self):
+        signup = CourseSignup.objects.create(user=self.user, course=self.course)
+        self.client.force_authenticate(self.user)
+
+        response = self.client.get(self.list_url)
+
+        self.assertIn(
+            signup.id,
+            [item["id"] for item in response.json()["results"]]
+        )
+
+    def test_staff_access_to_different_user_signups(self):
+        User = get_user_model()
+        other_user = User.objects.create_user(
+            username="other", email="other@example.com", password="test"
+        )
+        other_user_signup = CourseSignup.objects.create(user=other_user, course=self.course)
+        self.user.is_staff = True
+        self.user.save()
+        self.client.force_authenticate(self.user)
+
+        response = self.client.get(self.list_url)
+
+        self.assertIn(
+            other_user_signup.id,
+            [item["id"] for item in response.json()["results"]]
+        )
+
     def tearDown(self):
         self.course.cover_image.delete()
