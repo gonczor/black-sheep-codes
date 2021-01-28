@@ -94,10 +94,7 @@ class CoursesSignupApiAccessTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.json(),
-            {
-                "nonFieldErrors": ["The fields course, user must make a unique set."]
-            }
+            response.json(), {"nonFieldErrors": ["The fields course, user must make a unique set."]}
         )
 
     def test_non_staff_access_to_different_user(self):
@@ -110,10 +107,7 @@ class CoursesSignupApiAccessTestCase(APITestCase):
 
         response = self.client.get(self.list_url)
 
-        self.assertNotIn(
-            other_user_signup.id,
-            [item["id"] for item in response.json()["results"]]
-        )
+        self.assertNotIn(other_user_signup.id, [item["id"] for item in response.json()["results"]])
 
     def test_non_staff_access_to_own_signups(self):
         signup = CourseSignup.objects.create(user=self.user, course=self.course)
@@ -121,10 +115,7 @@ class CoursesSignupApiAccessTestCase(APITestCase):
 
         response = self.client.get(self.list_url)
 
-        self.assertIn(
-            signup.id,
-            [item["id"] for item in response.json()["results"]]
-        )
+        self.assertIn(signup.id, [item["id"] for item in response.json()["results"]])
 
     def test_staff_access_to_different_user_signups(self):
         User = get_user_model()
@@ -138,10 +129,7 @@ class CoursesSignupApiAccessTestCase(APITestCase):
 
         response = self.client.get(self.list_url)
 
-        self.assertIn(
-            other_user_signup.id,
-            [item["id"] for item in response.json()["results"]]
-        )
+        self.assertIn(other_user_signup.id, [item["id"] for item in response.json()["results"]])
 
     def tearDown(self):
         self.course.cover_image.delete()
