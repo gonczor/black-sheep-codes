@@ -70,14 +70,8 @@ class CoursesSignupApiAccessTestCase(APITestCase):
         self.user = User.objects.create_user(
             username="test", email="test@example.com", password="test"
         )
-        self.course = Course.objects.create(
-            name="Test Course",
-            cover_image=get_cover_image()
-        )
-        self.data = {
-            "user": self.user.id,
-            "course": self.course.id
-        }
+        self.course = Course.objects.create(name="Test Course", cover_image=get_cover_image())
+        self.data = {"user": self.user.id, "course": self.course.id}
 
     def test_unauthenticated_signup(self):
         response = self.client.post(self.list_url, data=self.data)
@@ -90,9 +84,7 @@ class CoursesSignupApiAccessTestCase(APITestCase):
         response = self.client.post(self.list_url, data=self.data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(
-            CourseSignup.objects.filter(user=self.user, course=self.course).exists()
-        )
+        self.assertTrue(CourseSignup.objects.filter(user=self.user, course=self.course).exists())
 
     def test_signup_for_the_same_course_second_time(self):
         CourseSignup.objects.create(user=self.user, course=self.course)

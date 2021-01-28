@@ -26,4 +26,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseSignup
-        fields = ("user", "course",)
+        fields = (
+            "user",
+            "course",
+        )
