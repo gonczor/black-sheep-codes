@@ -94,7 +94,7 @@ class CoursesSignupApiAccessTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.json(), {"nonFieldErrors": ["The fields course, user must make a unique set."]}
+            response.json(), {"nonFieldErrors": ["Already signed up for this course."]}
         )
 
     def test_non_staff_access_to_different_user(self):

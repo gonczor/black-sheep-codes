@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from courses.models import Course, CourseSignup
 
@@ -12,7 +13,7 @@ class CourseSerializer(serializers.ModelSerializer):
 class CourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ("name", "image", "description")
+        fields = ("id", "name", "image", "description")
 
     image = serializers.SerializerMethodField()
 
@@ -24,6 +25,14 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
 
 class SignupSerializer(serializers.ModelSerializer):
+    validators = [
+        UniqueTogetherValidator(
+            queryset=CourseSignup.objects.all(),
+            fields=["user", "course"],
+            message="Already signed up for this course.",
+        )
+    ]
+
     class Meta:
         model = CourseSignup
         fields = (
