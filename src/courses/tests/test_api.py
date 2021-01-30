@@ -6,14 +6,14 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from common.tests import get_cover_image
-from courses.models import Course, CourseSignup
+from courses.models import Course, CourseSignup, CourseSection
 from courses.signals import cover_image_resize_callback
 
 
-class CoursesApiAccessTestCase(APITestCase):
+class CoursesApiBaseTestCase(APITestCase):
     def setUp(self):
         super().setUp()
+        self.course = Course.objects.create(name="Test Course")
         self.list_url = reverse("courses:course-list")
         self.reorder_url_name = "courses:course-reorder-sections"
         User = get_user_model()
@@ -22,6 +22,22 @@ class CoursesApiAccessTestCase(APITestCase):
         )
         # Disable signals
         signals.post_save.disconnect(cover_image_resize_callback, sender=Course)
+
+    def tearDown(self):
+        self.course.cover_image.delete(save=True)
+        signals.post_save.connect(cover_image_resize_callback, sender=Course)
+
+    def _add_course_permissions_to_user(self):
+        permissions = Permission.objects.filter(
+            content_type=ContentType.objects.get_for_model(Course)
+        )
+        self.user.user_permissions.set(permissions)
+
+
+class CoursesApiAccessTestCase(CoursesApiBaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.list_url = reverse("courses:course-list")
 
     def test_list_unauthenticated(self):
         response = self.client.get(self.list_url)
@@ -63,16 +79,14 @@ class CoursesApiAccessTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_reorder_sections_access_by_unauthenticated(self):
-        course = Course.objects.create(name="Test Course", cover_image=get_cover_image())
-        url = reverse(self.reorder_url_name, args=(course.id,))
+        url = reverse(self.reorder_url_name, args=(self.course.id,))
         response = self.client.patch(url)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_reorder_sections_access_without_permissions(self):
         self.client.force_authenticate(self.user)
-        course = Course.objects.create(name="Test Course", cover_image=get_cover_image())
-        url = reverse(self.reorder_url_name, args=(course.id,))
+        url = reverse(self.reorder_url_name, args=(self.course.id,))
         response = self.client.patch(url)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -80,8 +94,7 @@ class CoursesApiAccessTestCase(APITestCase):
     def test_reorder_sections_with_permissions(self):
         self.client.force_authenticate(self.user)
         self._add_course_permissions_to_user()
-        course = Course.objects.create(name="Test Course", cover_image=get_cover_image())
-        url = reverse(self.reorder_url_name, args=(course.id,))
+        url = reverse(self.reorder_url_name, args=(self.course.id,))
         response = self.client.patch(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -89,17 +102,23 @@ class CoursesApiAccessTestCase(APITestCase):
     def test_reorder_sections_with_invalid_method(self):
         self.client.force_authenticate(self.user)
         self._add_course_permissions_to_user()
-        course = Course.objects.create(name="Test Course", cover_image=get_cover_image())
-        url = reverse(self.reorder_url_name, args=(course.id,))
+        url = reverse(self.reorder_url_name, args=(self.course.id,))
         response = self.client.post(url)
 
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def _add_course_permissions_to_user(self):
-        permissions = Permission.objects.filter(
-            content_type=ContentType.objects.get_for_model(Course)
-        )
-        self.user.user_permissions.set(permissions)
+
+class CourseApiTestCase(CoursesApiBaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.reorder_url = reverse(self.reorder_url_name, args=(self.course.id,))
+        self._add_course_permissions_to_user()
+        self.client.force_authenticate(self.user)
+
+    def test_reorder(self):
+        section1 = CourseSection.objects.create(course=self.course)
+        section2 = CourseSection.objects.create(course=self.course)
+
 
 class CoursesSignupApiAccessTestCase(APITestCase):
     def setUp(self):
@@ -109,7 +128,7 @@ class CoursesSignupApiAccessTestCase(APITestCase):
         self.user = User.objects.create_user(
             username="test", email="test@example.com", password="test"
         )
-        self.course = Course.objects.create(name="Test Course", cover_image=get_cover_image())
+        self.course = Course.objects.create(name="Test Course")
         self.data = {"user": self.user.id, "course": self.course.id}
 
     def test_unauthenticated_signup(self):
@@ -171,4 +190,4 @@ class CoursesSignupApiAccessTestCase(APITestCase):
         self.assertIn(other_user_signup.id, [item["id"] for item in response.json()["results"]])
 
     def tearDown(self):
-        self.course.cover_image.delete()
+        self.course.cover_image.delete(save=True)
