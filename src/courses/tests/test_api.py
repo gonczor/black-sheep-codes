@@ -15,6 +15,7 @@ class CoursesApiAccessTestCase(APITestCase):
     def setUp(self):
         super().setUp()
         self.list_url = reverse("courses:course-list")
+        self.reorder_url_name = "courses:course-reorder-sections"
         User = get_user_model()
         self.user = User.objects.create_user(
             username="test", email="test@example.com", password="test"
@@ -61,6 +62,44 @@ class CoursesApiAccessTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_reorder_sections_access_by_unauthenticated(self):
+        course = Course.objects.create(name="Test Course", cover_image=get_cover_image())
+        url = reverse(self.reorder_url_name, args=(course.id,))
+        response = self.client.patch(url)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_reorder_sections_access_without_permissions(self):
+        self.client.force_authenticate(self.user)
+        course = Course.objects.create(name="Test Course", cover_image=get_cover_image())
+        url = reverse(self.reorder_url_name, args=(course.id,))
+        response = self.client.patch(url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_reorder_sections_with_permissions(self):
+        self.client.force_authenticate(self.user)
+        self._add_course_permissions_to_user()
+        course = Course.objects.create(name="Test Course", cover_image=get_cover_image())
+        url = reverse(self.reorder_url_name, args=(course.id,))
+        response = self.client.patch(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_reorder_sections_with_invalid_method(self):
+        self.client.force_authenticate(self.user)
+        self._add_course_permissions_to_user()
+        course = Course.objects.create(name="Test Course", cover_image=get_cover_image())
+        url = reverse(self.reorder_url_name, args=(course.id,))
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def _add_course_permissions_to_user(self):
+        permissions = Permission.objects.filter(
+            content_type=ContentType.objects.get_for_model(Course)
+        )
+        self.user.user_permissions.set(permissions)
 
 class CoursesSignupApiAccessTestCase(APITestCase):
     def setUp(self):
