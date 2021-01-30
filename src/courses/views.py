@@ -12,7 +12,8 @@ from rest_framework.viewsets import ModelViewSet
 from courses.models import Course, CourseSignup
 from courses.permissions import CoursesCreatePermission, CourseEditPermission, \
     CourseDeletePermission
-from courses.serializers import CourseDetailSerializer, CourseSerializer, SignupSerializer
+from courses.serializers import CourseDetailSerializer, CourseSerializer, SignupSerializer, \
+    CourseSectionReorderSerializer
 
 
 class CourseViewSet(ModelViewSet):
@@ -22,6 +23,8 @@ class CourseViewSet(ModelViewSet):
     def get_serializer_class(self) -> Type[Serializer]:
         if self.action == "retrieve":
             return CourseDetailSerializer
+        elif self.action == "reorder_sections":
+            return CourseSectionReorderSerializer
         else:
             return CourseSerializer
 
@@ -39,7 +42,12 @@ class CourseViewSet(ModelViewSet):
 
     @action(detail=True, methods=["PATCH"], url_path="reorder-sections")
     def reorder_sections(self, request: Request, pk: int) -> Response:
-        return Response()
+        course = self.get_object()
+        serializer = self.get_serializer(instance=course, data=self.request.data)
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CourseSignupView(ModelViewSet):

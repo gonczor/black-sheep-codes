@@ -95,9 +95,9 @@ class CoursesApiAccessTestCase(CoursesApiBaseTestCase):
         self.client.force_authenticate(self.user)
         self._add_course_permissions_to_user()
         url = reverse(self.reorder_url_name, args=(self.course.id,))
-        response = self.client.patch(url)
+        response = self.client.patch(url, data={"sections": []})
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_reorder_sections_with_invalid_method(self):
         self.client.force_authenticate(self.user)
