@@ -118,6 +118,19 @@ class CourseApiTestCase(CoursesApiBaseTestCase):
     def test_reorder(self):
         section1 = CourseSection.objects.create(course=self.course)
         section2 = CourseSection.objects.create(course=self.course)
+        data = {"sections": [section2.id, section1.id]}
+
+        self.assertEqual(
+            list(self.course.get_coursesection_order().values_list("id", flat=True)),
+            [section1.id, section2.id]
+        )
+        self.client.patch(self.reorder_url, data=data)
+
+        self.course.refresh_from_db()
+        self.assertEqual(
+            list(self.course.get_coursesection_order().values_list("id", flat=True)),
+            [section2.id, section1.id]
+        )
 
 
 class CoursesSignupApiAccessTestCase(APITestCase):
