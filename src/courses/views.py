@@ -10,10 +10,17 @@ from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from courses.models import Course, CourseSignup
-from courses.permissions import CoursesCreatePermission, CourseEditPermission, \
-    CourseDeletePermission
-from courses.serializers import CourseDetailSerializer, CourseSerializer, SignupSerializer, \
-    CourseSectionReorderSerializer
+from courses.permissions import (
+    CourseDeletePermission,
+    CourseEditPermission,
+    CoursesCreatePermission,
+)
+from courses.serializers import (
+    CourseDetailSerializer,
+    CourseSectionReorderSerializer,
+    CourseSerializer,
+    SignupSerializer,
+)
 
 
 class CourseViewSet(ModelViewSet):

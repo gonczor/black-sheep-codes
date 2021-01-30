@@ -1,14 +1,14 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import signals
+from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase
 
-from courses.models import Course, CourseSignup, CourseSection
+from courses.models import Course, CourseSection, CourseSignup
 from courses.serializers import CourseSectionReorderSerializer
 from courses.signals import cover_image_resize_callback
 
@@ -30,7 +30,13 @@ class CourseSectionReorderSerializerTestCase(TestCase):
         self.assertFalse(serializer.is_valid())
         self.assertEqual(
             serializer.errors,
-            {'sections': [ErrorDetail(string='Invalid pk "1" - object does not exist.', code='does_not_exist')]}
+            {
+                "sections": [
+                    ErrorDetail(
+                        string='Invalid pk "1" - object does not exist.', code="does_not_exist"
+                    )
+                ]
+            },
         )
 
     def test_reorder_section(self):
@@ -43,5 +49,5 @@ class CourseSectionReorderSerializerTestCase(TestCase):
         serializer.save()
         self.assertEqual(
             list(self.course.get_coursesection_order().values_list("id", flat=True)),
-            [section2.id, section1.id]
+            [section2.id, section1.id],
         )

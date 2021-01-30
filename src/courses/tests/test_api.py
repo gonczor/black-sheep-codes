@@ -6,7 +6,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from courses.models import Course, CourseSignup, CourseSection
+from courses.models import Course, CourseSection, CourseSignup
 from courses.signals import cover_image_resize_callback
 
 
@@ -122,14 +122,14 @@ class CourseApiTestCase(CoursesApiBaseTestCase):
 
         self.assertEqual(
             list(self.course.get_coursesection_order().values_list("id", flat=True)),
-            [section1.id, section2.id]
+            [section1.id, section2.id],
         )
         self.client.patch(self.reorder_url, data=data)
 
         self.course.refresh_from_db()
         self.assertEqual(
             list(self.course.get_coursesection_order().values_list("id", flat=True)),
-            [section2.id, section1.id]
+            [section2.id, section1.id],
         )
 
 
