@@ -17,6 +17,16 @@
                         </div>
                     </div>
                 </div>
+                <div class="m-2 border rounded">
+                    <div class="pt-2 text-center fw-bold">
+                        Your courses:
+                    </div>
+                    <div v-for="course in ownCourses">
+                        <div class="text-center course-element" :data-id="course.id">
+                            {{ course.name }}
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-lg-10">
                 <div class="p-2 m-2 border rounded course-details-container">
