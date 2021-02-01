@@ -22,6 +22,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - redis
   redis:
     image: redis:6.0-alpine
     ports:

@@ -2,14 +2,25 @@ from typing import Type
 
 from django.db.models import QuerySet
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from courses.models import Course, CourseSignup
-from courses.permissions import CoursesManagementPermission
-from courses.serializers import CourseDetailSerializer, CourseSerializer, SignupSerializer
+from courses.permissions import (
+    CourseDeletePermission,
+    CourseEditPermission,
+    CoursesCreatePermission,
+)
+from courses.serializers import (
+    CourseDetailSerializer,
+    CourseSectionReorderSerializer,
+    CourseSerializer,
+    SignupSerializer,
+)
 
 
 class CourseViewSet(ModelViewSet):
@@ -19,14 +30,31 @@ class CourseViewSet(ModelViewSet):
     def get_serializer_class(self) -> Type[Serializer]:
         if self.action == "retrieve":
             return CourseDetailSerializer
+        elif self.action == "reorder_sections":
+            return CourseSectionReorderSerializer
         else:
             return CourseSerializer
 
     def get_permissions(self):
         permission_classes = self.permission_classes
-        if self.action in {"create", "update", "partial_update", "delete"}:
-            permission_classes = [IsAuthenticated, CoursesManagementPermission]
+        if self.action == "create":
+            permission_classes = [IsAuthenticated, CoursesCreatePermission]
+        elif self.action in {"retrieve", "list"}:
+            permission_classes = self.permission_classes
+        elif self.action in {"create", "update", "partial_update", "reorder_sections"}:
+            permission_classes = [IsAuthenticated, CourseEditPermission]
+        elif self.action == "delete":
+            permission_classes = [IsAuthenticated, CourseDeletePermission]
         return [permission() for permission in permission_classes]
+
+    @action(detail=True, methods=["PATCH"], url_path="reorder-sections")
+    def reorder_sections(self, request: Request, pk: int) -> Response:
+        course = self.get_object()
+        serializer = self.get_serializer(instance=course, data=self.request.data)
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CourseSignupView(ModelViewSet):
