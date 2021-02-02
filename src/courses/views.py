@@ -30,7 +30,7 @@ class CourseViewSet(ModelViewSet):
     def get_queryset(self) -> QuerySet:
         queryset = self.queryset
         if self.action == "list_assigned":
-            queryset = queryset.filter(signups__user=self.request.user)
+            queryset = queryset.filter_signed_up(user=self.request.user)
         return queryset
 
     def get_serializer_class(self) -> Type[Serializer]:
@@ -65,7 +65,6 @@ class CourseViewSet(ModelViewSet):
     @action(detail=False, methods=["GET"], url_path="list-assigned")
     def list_assigned(self, request: Request) -> Response:
         queryset = self.get_queryset()
-        queryset = self.filter_queryset(queryset)
         queryset = self.paginate_queryset(queryset)
         serializer = self.get_serializer(instance=queryset, many=True)
         return self.get_paginated_response(serializer.data)
