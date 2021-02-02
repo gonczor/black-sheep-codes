@@ -11,6 +11,18 @@ const HelloVueApp = {
                 }
             );
             this.courses = response.data.results;
+            await this.listOwnCourses();
+        },
+        async listOwnCourses(){
+            const ownCoursesResponse = await axios.get(
+                '/api/v1/courses/list-assigned/',
+                {
+                    headers: {
+                        Authorization: 'Token ' + window.localStorage.token
+                    }
+                }
+            );
+            this.ownCourses = ownCoursesResponse.data.results;
         },
         async getCourseDetails(event){
             const courseId = event.target.dataset.id;
@@ -40,7 +52,8 @@ const HelloVueApp = {
                     }
                 );
                 if(response.status === 201) {
-                    this.showSuccessfulSignupToast()
+                    this.showSuccessfulSignupToast();
+                    await this.listOwnCourses();
                 }
             } catch (error) {
                 let message = "";
@@ -70,6 +83,7 @@ const HelloVueApp = {
     data() {
         return {
             courses: [],
+            ownCourses: [],
             courseDetails: {},
             displaySignup: false,
             signupToast: document.getElementById('signupToast')

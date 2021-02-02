@@ -11,6 +11,7 @@ from django.db.models import (
 from django.db.models.signals import post_save
 
 import courses.signals
+from courses.querysets import CourseQuerySet
 
 
 def get_course_upload_directory(course: "Course", filename: str) -> str:
@@ -24,6 +25,8 @@ class Course(Model):
     small_cover_image = ImageField(null=True, blank=True, upload_to=get_course_upload_directory)
     created = DateTimeField(auto_now_add=True)
     updated = DateTimeField(auto_now=True)
+
+    objects = CourseQuerySet.as_manager()
 
     def __str__(self):
         return f"{self.name} ({self.id})"

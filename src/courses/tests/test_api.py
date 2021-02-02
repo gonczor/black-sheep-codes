@@ -107,6 +107,18 @@ class CoursesApiAccessTestCase(CoursesApiBaseTestCase):
 
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
+    def test_list_assigned_lists_only_own(self):
+        other_course = Course.objects.create(name="Test Course")
+        CourseSignup.objects.create(user=self.user, course=self.course)
+
+        self.client.force_authenticate(self.user)
+
+        response = self.client.get(reverse("courses:course-list-assigned"))
+
+        ids = [course["id"] for course in response.json()["results"]]
+        self.assertIn(self.course.id, ids)
+        self.assertNotIn(other_course.id, ids)
+
 
 class CourseApiTestCase(CoursesApiBaseTestCase):
     def setUp(self):
