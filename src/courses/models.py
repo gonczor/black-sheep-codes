@@ -40,7 +40,7 @@ class CourseSection(Model):
         order_with_respect_to = "course"
 
     def __str__(self):
-        return f"{self.name} ({self.id})"
+        return f"{self.name} ({self.id}) - {self.course}"
 
 
 class CourseSignup(Model):
