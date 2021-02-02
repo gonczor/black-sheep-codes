@@ -1,5 +1,6 @@
 .course-element:hover {
     background-color: var(--primary-blue);
+    cursor: pointer;
 }
 
 .btn-signup:hover {
