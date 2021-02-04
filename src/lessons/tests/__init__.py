@@ -1,6 +1,7 @@
 from unittest import TestCase
+
 from courses.models import Course, CourseSection
-from lessons.models import Lesson, Exercise, Test
+from lessons.models import Exercise, Lesson, Test
 
 
 class BaseLessonTestCase(TestCase):

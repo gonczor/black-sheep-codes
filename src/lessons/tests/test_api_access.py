@@ -10,7 +10,7 @@ class LessonAPITestCase(BaseLessonTestCase, APITestCase):
     def setUp(self):
         super().setUp()
         self.list_url = reverse("lessons:lesson-list")
-        self.lesson_detail_url  = reverse("lessons:lesson-detail", args=(self.lesson.id,))
+        self.lesson_detail_url = reverse("lessons:lesson-detail", args=(self.lesson.id,))
         User = get_user_model()
         self.user = User.objects.create_user(
             username="test", email="test@example.com", password="test"

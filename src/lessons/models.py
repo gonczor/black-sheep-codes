@@ -1,4 +1,4 @@
-from django.db.models import ForeignKey, CASCADE, FileField, TextField, CharField
+from django.db.models import CASCADE, CharField, FileField, ForeignKey, TextField
 from polymorphic.models import PolymorphicModel
 
 from courses.models import CourseSection

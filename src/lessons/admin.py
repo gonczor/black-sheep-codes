@@ -1,6 +1,6 @@
 from django.contrib.admin import ModelAdmin, site
 
-from lessons.models import Lesson, Exercise, Test
+from lessons.models import Exercise, Lesson, Test
 
 
 class BaseLessonAdmin(ModelAdmin):

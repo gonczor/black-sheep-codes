@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from rest_polymorphic.serializers import PolymorphicSerializer
 
-from lessons.models import Lesson, Exercise, Test, BaseLesson
+from lessons.models import BaseLesson, Exercise, Lesson, Test
 
 
 class LessonSerializer(ModelSerializer):
@@ -28,7 +28,7 @@ class BaseLessonSerializer(PolymorphicSerializer):
     model_serializer_mapping = {
         Lesson: LessonSerializer,
         Exercise: ExerciseSerializer,
-        Test: TestSerializer
+        Test: TestSerializer,
     }
 
 

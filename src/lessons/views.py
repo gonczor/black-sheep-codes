@@ -4,7 +4,7 @@ from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from lessons.models import BaseLesson
-from lessons.serializers import ListLessonsSerializer, BaseLessonSerializer
+from lessons.serializers import BaseLessonSerializer, ListLessonsSerializer
 
 
 class LessonViewSet(ModelViewSet):

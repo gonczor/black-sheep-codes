@@ -1,4 +1,4 @@
-from lessons.models import Lesson, Exercise, Test
+from lessons.models import Exercise, Lesson, Test
 from lessons.tests import BaseLessonTestCase
 
 
@@ -17,17 +17,11 @@ class LessonModelsTestCase(BaseLessonTestCase):
             self.course_section.get_baselesson_order().values_list("id", flat=True)
         )
 
-        self.assertEqual(
-            lessons_order,
-            [self.lesson.id, self.exercise.id, self.test.id]
-        )
+        self.assertEqual(lessons_order, [self.lesson.id, self.exercise.id, self.test.id])
 
         self.course_section.set_baselesson_order(lessons_order[::-1])
         lessons_order = list(
             self.course_section.get_baselesson_order().values_list("id", flat=True)
         )
 
-        self.assertEqual(
-            lessons_order,
-            [self.test.id, self.exercise.id, self.lesson.id]
-        )
+        self.assertEqual(lessons_order, [self.test.id, self.exercise.id, self.lesson.id])
