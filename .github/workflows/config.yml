@@ -12,7 +12,7 @@ jobs:
       - name: Wake up databases
         run: docker-compose up -d db redis
       - name: Test
-        run: docker-compose run web python manage.py test
+        run: docker-compose run web python manage.py test --parallel
   lint:
     runs-on: ubuntu-latest
     steps:
