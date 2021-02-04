@@ -1,18 +1,10 @@
-from unittest import TestCase
-
-from courses.models import Course, CourseSection
 from lessons.models import Lesson, Exercise, Test
+from lessons.tests import BaseLessonTestCase
 
 
-class LessonModelsTestCase(TestCase):
+class LessonModelsTestCase(BaseLessonTestCase):
     # Those tests are mainly to prove correct usage of certain mechanisms and prevent from
     # regressions should the used libraries become obsolete.
-    def setUp(self):
-        self.course = Course.objects.create(name="test")
-        self.course_section = CourseSection.objects.create(course=self.course, name="test section")
-        self.lesson = Lesson.objects.create(course_section=self.course_section)
-        self.exercise = Exercise.objects.create(course_section=self.course_section)
-        self.test = Test.objects.create(course_section=self.course_section)
 
     def test_access_to_polymorphic_relations(self):
         self.assertEqual(self.course_section.lessons.count(), 3)
