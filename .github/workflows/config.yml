@@ -10,6 +10,8 @@ jobs:
       - name: Build Image
         run: docker-compose build web
       - name: Test
+        run: docker-compose up -d db redis
+      - name: Test
         run: docker-compose run web python manage.py test
   lint:
     runs-on: ubuntu-latest
