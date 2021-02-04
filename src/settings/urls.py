@@ -24,6 +24,7 @@ urlpatterns = [
     path("api/v1/auth/", include("djoser.urls")),
     path("api/v1/auth/", include("djoser.urls.authtoken")),
     path("api/v1/", include("courses.urls")),
+    path("api/v1/", include("lessons.urls")),
 ]
 
 if not settings.AWS_STORAGE_BUCKET_NAME:

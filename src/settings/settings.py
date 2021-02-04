@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "aws",
     "courses",
     "frontend",
+    "lessons",
 ]
 
 MIDDLEWARE = [
