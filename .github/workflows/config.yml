@@ -9,7 +9,7 @@ jobs:
         run: cp .env.example .env
       - name: Build Image
         run: docker-compose build web
-      - name: Test
+      - name: Wake up databases
         run: docker-compose up -d db redis
       - name: Test
         run: docker-compose run web python manage.py test
