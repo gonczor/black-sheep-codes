@@ -9,10 +9,10 @@ class CoursesCreatePermission(BasePermission):
 
 
 class CourseEditPermission(BasePermission):
-    def has_permission(self, request, view):
+    def has_permission(self, request: Request, view: ViewSet) -> bool:
         return request.user.has_perm("courses.change_course")
 
 
 class CourseDeletePermission(BasePermission):
-    def has_permission(self, request, view):
+    def has_permission(self, request: Request, view: ViewSet) -> bool:
         return request.user.has_perm("courses.delete_course")
