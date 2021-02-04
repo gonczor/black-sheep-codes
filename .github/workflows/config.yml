@@ -9,8 +9,10 @@ jobs:
         run: cp .env.example .env
       - name: Build Image
         run: docker-compose build web
+      - name: Wake up databases
+        run: docker-compose up -d db redis
       - name: Test
-        run: docker-compose run web python manage.py test --parallel
+        run: docker-compose run web python manage.py test
   lint:
     runs-on: ubuntu-latest
     steps:
