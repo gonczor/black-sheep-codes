@@ -9,7 +9,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.test import APITestCase
 
-from lessons.models import BaseLesson
+from courses.models import CourseSignup, Course, CourseSection
+from lessons.models import BaseLesson, Lesson
 from lessons.tests import BaseLessonTestCase
 
 
@@ -22,6 +23,7 @@ class LessonAPITestCase(BaseLessonTestCase, APITestCase):
         self.user = User.objects.create_user(
             username="test", email="test@example.com", password="test"
         )
+        CourseSignup.objects.create(course=self.course, user=self.user)
 
     def test_list_unauthenticated(self):
         response = self.client.get(self.list_url)
@@ -66,6 +68,47 @@ class LessonAPITestCase(BaseLessonTestCase, APITestCase):
         response = self._get_response(action)
 
         self.assertEqual(response.status_code, status_code)
+
+    def test_access_to_unsubscribed_lesson(self):
+        unsubscribed_lesson = self._make_unsubscribed_course_lesson()
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(self.list_url)
+
+        lesson_ids = [lesson["id"] for lesson in response.json()["results"]]
+        self.assertIn(self.lesson.id, lesson_ids)
+        self.assertNotIn(unsubscribed_lesson.id, lesson_ids)
+
+    def test_access_to_unsubscribed_lesson_by_staff(self):
+        unsubscribed_lesson = self._make_unsubscribed_course_lesson()
+        self.user.is_staff = True
+        self.user.save()
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(self.list_url)
+
+        lesson_ids = [lesson["id"] for lesson in response.json()["results"]]
+        self.assertIn(unsubscribed_lesson.id, lesson_ids)
+
+    def test_access_to_unsubscribed_lesson_by_superuser(self):
+        unsubscribed_lesson = self._make_unsubscribed_course_lesson()
+        self.user.is_superuser = True
+        self.user.save()
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(self.list_url)
+
+        lesson_ids = [lesson["id"] for lesson in response.json()["results"]]
+        self.assertIn(unsubscribed_lesson.id, lesson_ids)
+
+    def _make_unsubscribed_course_lesson(self) -> Lesson:
+        unsubscribed_course = Course.objects.create(name="unsubscribed")
+        unsubscribed_section = CourseSection.objects.create(
+            course=unsubscribed_course, name="unsubscribed"
+        )
+        return Lesson.objects.create(
+            course_section=unsubscribed_section, name="unsubscribed"
+        )
 
     def _assign_permission(self, permission_name: Optional[str]):
         if permission_name is None:

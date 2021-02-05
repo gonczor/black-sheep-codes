@@ -1,5 +1,6 @@
 from typing import Type
 
+from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
@@ -15,6 +16,11 @@ from lessons.serializers import BaseLessonSerializer, ListLessonsSerializer
 
 class LessonViewSet(ModelViewSet):
     queryset = BaseLesson.objects.all()
+
+    def get_queryset(self) -> QuerySet:
+        if not self.request.user.is_staff and not self.request.user.is_superuser:
+            return self.queryset.filter(course_section__course__signups__user=self.request.user)
+        return self.queryset
 
     def get_permissions(self):
         permission_classes = self.permission_classes
