@@ -1,7 +1,12 @@
 from typing import Type
 
+from django.db import IntegrityError
 from django.db.models import QuerySet
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -37,3 +42,17 @@ class LessonViewSet(ModelViewSet):
             return ListLessonsSerializer
         else:
             return BaseLessonSerializer
+
+    @action(
+        detail=True, methods=["PATCH"], url_path="mark-as-complete", url_name="mark_as_complete"
+    )
+    def mark_as_complete(self, request: Request, pk: int) -> Response:
+        lesson = self.get_object()
+        try:
+            lesson.complete(user=self.request.user)
+        except IntegrityError:
+            return Response(
+                status=status.HTTP_409_CONFLICT,
+                data={"non_field_errors": ["Already marked as complete."]},
+            )
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
+from django.test import TestCase
+from parameterized import parameterized
 
 from lessons.models import Exercise, Lesson, Test
 from lessons.tests import BaseLessonTestCase
 
 
-class LessonModelsTestCase(BaseLessonTestCase):
+class LessonModelsTestCase(BaseLessonTestCase, TestCase):
     # Those tests are mainly to prove correct usage of certain mechanisms and prevent from
     # regressions should the used libraries become obsolete.
 
@@ -29,22 +31,25 @@ class LessonModelsTestCase(BaseLessonTestCase):
 
         self.assertEqual(lessons_order, [self.test.id, self.exercise.id, self.lesson.id])
 
-    def test_is_completed_by(self):
+    @parameterized.expand([("lesson", "lesson"), ("exercise", "exercise"), ("test", "test")])
+    def test_is_completed_by(self, _: str, lesson_type: str):
         User = get_user_model()
-        user = User.objects.create_user(
-            username="test", email="test@example.com", password="test"
-        )
+        user = User.objects.create_user(username="test", email="test@example.com", password="test")
 
-        self.assertFalse(self.lesson.is_completed_by(user))
-        self.lesson.complete(user)
-        self.assertTrue(self.lesson.is_completed_by(user))
+        lesson = getattr(self, lesson_type)
 
-    def test_duplicate_complete(self):
+        self.assertFalse(lesson.is_completed_by(user))
+        lesson.complete(user)
+        self.assertTrue(lesson.is_completed_by(user))
+
+    @parameterized.expand(["lesson", "exercise", "test"])
+    def test_duplicate_complete(self, lesson_type: str):
         User = get_user_model()
         user = User.objects.create_user(
             username="tests", email="tests@example.com", password="test"
         )
-        self.lesson.complete(user)
+        lesson = getattr(self, lesson_type)
+        lesson.complete(user)
 
         with self.assertRaises(IntegrityError):
-            self.lesson.complete(user)
+            lesson.complete(user)

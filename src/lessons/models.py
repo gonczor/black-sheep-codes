@@ -1,5 +1,12 @@
-from django.db.models import CASCADE, CharField, FileField, ForeignKey, TextField, Model, \
-    DateTimeField
+from django.db.models import (
+    CASCADE,
+    CharField,
+    DateTimeField,
+    FileField,
+    ForeignKey,
+    Model,
+    TextField,
+)
 from polymorphic.models import PolymorphicModel
 
 from courses.models import CourseSection
