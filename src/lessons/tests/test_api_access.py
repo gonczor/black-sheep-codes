@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.test import APITestCase
 
-from courses.models import CourseSignup, Course, CourseSection
+from courses.models import Course, CourseSection, CourseSignup
 from lessons.models import BaseLesson, Lesson
 from lessons.tests import BaseLessonTestCase
 
@@ -106,9 +106,7 @@ class LessonAPITestCase(BaseLessonTestCase, APITestCase):
         unsubscribed_section = CourseSection.objects.create(
             course=unsubscribed_course, name="unsubscribed"
         )
-        return Lesson.objects.create(
-            course_section=unsubscribed_section, name="unsubscribed"
-        )
+        return Lesson.objects.create(course_section=unsubscribed_section, name="unsubscribed")
 
     def _assign_permission(self, permission_name: Optional[str]):
         if permission_name is None:
