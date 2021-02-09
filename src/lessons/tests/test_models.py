@@ -45,8 +45,7 @@ class LessonModelsTestCase(BaseLessonTestCase, TestCase):
     @parameterized.expand([("lesson", "lesson"), ("exercise", "exercise"), ("test", "test")])
     def test_revert_complete(self, _: str, lesson_type: str):
         User = get_user_model()
-        user = User.objects.create_user(username="test", email="test@example.com",
-                                        password="test")
+        user = User.objects.create_user(username="test", email="test@example.com", password="test")
 
         lesson = getattr(self, lesson_type)
         lesson.complete(user)

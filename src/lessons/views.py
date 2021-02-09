@@ -56,3 +56,14 @@ class LessonViewSet(ModelViewSet):
                 data={"non_field_errors": ["Already marked as complete."]},
             )
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=True,
+        methods=["PATCH"],
+        url_path="revert-as-complete",
+        url_name="revert_mark_as_complete",
+    )
+    def revert_mark_as_complete(self, request: Request, pk: int) -> Response:
+        lesson = self.get_object()
+        lesson.revert_complete(user=self.request.user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
