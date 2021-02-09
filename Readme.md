@@ -1,4 +1,5 @@
-![Build](https://github.com/gonczor/black-sheep-learns/workflows/Test/badge.svg)
+![Test](https://github.com/gonczor/black-sheep-codes/workflows/Test/badge.svg) [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/black-sheep/black-sheep-codes)
+
 
 # Black Sheep Learns
 

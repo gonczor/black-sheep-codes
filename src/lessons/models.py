@@ -1,7 +1,16 @@
-from django.db.models import CASCADE, CharField, FileField, ForeignKey, TextField
+from django.db.models import (
+    CASCADE,
+    CharField,
+    DateTimeField,
+    FileField,
+    ForeignKey,
+    Model,
+    TextField,
+)
 from polymorphic.models import PolymorphicModel
 
 from courses.models import CourseSection
+from settings import settings
 
 
 def get_lesson_video_upload_directory(lesson: "Lesson", filename: str) -> str:
@@ -20,6 +29,15 @@ class BaseLesson(PolymorphicModel):
     class Meta:
         order_with_respect_to = "course_section"
 
+    def is_completed_by(self, user: settings.AUTH_USER_MODEL) -> bool:
+        return CompletedLesson.objects.filter(lesson=self, user=user).exists()
+
+    def complete(self, user: settings.AUTH_USER_MODEL):
+        CompletedLesson.objects.create(lesson=self, user=user)
+
+    def revert_complete(self, user: settings.AUTH_USER_MODEL):
+        CompletedLesson.objects.filter(lesson=self, user=user).delete()
+
 
 class Lesson(BaseLesson):
     video = FileField(upload_to=get_lesson_video_upload_directory, null=True, blank=True)
@@ -34,3 +52,12 @@ class Exercise(BaseLesson):
 
 class Test(BaseLesson):
     pass
+
+
+class CompletedLesson(Model):
+    lesson = ForeignKey(BaseLesson, on_delete=CASCADE)
+    user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
+    created = DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("lesson", "user")
