@@ -1,3 +1,6 @@
+from django.contrib.auth import get_user_model
+from django.db import IntegrityError
+
 from lessons.models import Exercise, Lesson, Test
 from lessons.tests import BaseLessonTestCase
 
@@ -25,3 +28,23 @@ class LessonModelsTestCase(BaseLessonTestCase):
         )
 
         self.assertEqual(lessons_order, [self.test.id, self.exercise.id, self.lesson.id])
+
+    def test_is_completed_by(self):
+        User = get_user_model()
+        user = User.objects.create_user(
+            username="test", email="test@example.com", password="test"
+        )
+
+        self.assertFalse(self.lesson.is_completed_by(user))
+        self.lesson.complete(user)
+        self.assertTrue(self.lesson.is_completed_by(user))
+
+    def test_duplicate_complete(self):
+        User = get_user_model()
+        user = User.objects.create_user(
+            username="tests", email="tests@example.com", password="test"
+        )
+        self.lesson.complete(user)
+
+        with self.assertRaises(IntegrityError):
+            self.lesson.complete(user)
