@@ -35,6 +35,9 @@ class BaseLesson(PolymorphicModel):
     def complete(self, user: settings.AUTH_USER_MODEL):
         CompletedLesson.objects.create(lesson=self, user=user)
 
+    def revert_complete(self, user: settings.AUTH_USER_MODEL):
+        CompletedLesson.objects.filter(lesson=self, user=user).delete()
+
 
 class Lesson(BaseLesson):
     video = FileField(upload_to=get_lesson_video_upload_directory, null=True, blank=True)

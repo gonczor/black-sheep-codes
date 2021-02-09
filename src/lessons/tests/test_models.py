@@ -42,8 +42,21 @@ class LessonModelsTestCase(BaseLessonTestCase, TestCase):
         lesson.complete(user)
         self.assertTrue(lesson.is_completed_by(user))
 
-    @parameterized.expand(["lesson", "exercise", "test"])
-    def test_duplicate_complete(self, lesson_type: str):
+    @parameterized.expand([("lesson", "lesson"), ("exercise", "exercise"), ("test", "test")])
+    def test_revert_complete(self, _: str, lesson_type: str):
+        User = get_user_model()
+        user = User.objects.create_user(username="test", email="test@example.com",
+                                        password="test")
+
+        lesson = getattr(self, lesson_type)
+        lesson.complete(user)
+
+        self.assertTrue(lesson.is_completed_by(user))
+        lesson.revert_complete(user)
+        self.assertFalse(lesson.is_completed_by(user))
+
+    @parameterized.expand([("lesson", "lesson"), ("exercise", "exercise"), ("test", "test")])
+    def test_duplicate_complete(self, _: str, lesson_type: str):
         User = get_user_model()
         user = User.objects.create_user(
             username="tests", email="tests@example.com", password="test"
