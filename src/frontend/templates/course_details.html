@@ -4,7 +4,30 @@
 {% verbatim %}
 
 <div id="app">
-TEST
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="m-2 border rounded">
+                    <a href="/courses/" class="return-link">
+                        <div class="p-2 text-center fw-bold">Back to all courses</div></a>
+                </div>
+                <div class="m-2 border rounded">
+                    <div class="text-center">
+                        <div v-for="section in sections">
+                            <div class="fw-bold bg-blue">
+                                {{ section.name }}
+                            </div>
+                            <div v-for="lesson in section.lessons">
+                                <div class="text-center lesson-element" :data-lesson-id="lesson.id">
+                                    {{ lesson.name }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endverbatim %}
