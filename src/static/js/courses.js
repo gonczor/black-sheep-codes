@@ -79,6 +79,9 @@ const HelloVueApp = {
             );
 
         },
+        redirectToDetails(event) {
+            window.location = '/courses/' + event.target.dataset.id + '/';
+        }
     },
     data() {
         return {

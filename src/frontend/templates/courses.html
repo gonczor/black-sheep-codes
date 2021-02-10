@@ -22,7 +22,7 @@
                         Your courses:
                     </div>
                     <div v-for="course in ownCourses">
-                        <div class="text-center course-element" :data-id="course.id">
+                        <div class="text-center course-element" v-on:click="redirectToDetails" :data-id="course.id">
                             {{ course.name }}
                         </div>
                     </div>

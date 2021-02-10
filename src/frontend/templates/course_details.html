@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% verbatim %}
+
+<div id="app">
+TEST
+</div>
+
+{% endverbatim %}
+{% endblock content %}
+
+{% block scripts %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/course_details.css' %}">
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="{% static 'js/axios.min.js' %}"></script>
+    <script src="{% static 'js/course_details.js' %}"></script>
+{% endblock scripts %}
