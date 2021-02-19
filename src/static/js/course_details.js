@@ -10,12 +10,25 @@ const CourseDetailsApp = {
                 }
             );
             this.sections = sectionsList.data.sections;
+        },
+        async getLessonDetails(event){
+            const lessonId = event.target.dataset.lessonId;
+            const response = await axios.get(
+                '/api/v1/lessons/' + lessonId + '/',
+                {
+                    headers: {
+                        Authorization: 'Token ' + window.localStorage.token
+                    }
+                }
+            );
+            this.lessonDetails = response.data;
         }
     },
     data() {
         return {
             courseId: null,
-            sections: []
+            sections: [],
+            lessonDetails: null
         }
     },
     mounted() {

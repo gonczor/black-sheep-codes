@@ -9,3 +9,15 @@
     border-bottom-style: solid;
     border-bottom-width: 1px;
 }
+
+.btn-complete {
+    background-color: var(--primary-green);
+}
+
+.btn-complete:hover {
+    color: var(--secondary-text-black)
+}
+
+.btn-incomplete {
+    background-color: var(--primary-red);
+}

@@ -18,11 +18,40 @@
                                 {{ section.name }}
                             </div>
                             <div v-for="(lesson, index) in section.lessons">
-                                <div v-if="index !== section.lessons.length-1" class="text-center lesson-element lesson-element-bordered" :data-lesson-id="lesson.id">
+                                <div v-if="index !== section.lessons.length-1" v-on:click="getLessonDetails" class="text-center lesson-element lesson-element-bordered" :data-lesson-id="lesson.id">
+                                    {{ lesson.name }} &check;
+                                </div>
+                                <div v-if="index === section.lessons.length-1" v-on:click="getLessonDetails" class="text-center lesson-element" :data-lesson-id="lesson.id">
                                     {{ lesson.name }}
                                 </div>
-                                <div v-if="index === section.lessons.length-1" class="text-center lesson-element" :data-lesson-id="lesson.id">
-                                    {{ lesson.name }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10">
+                <div class="m-2 p-2 border rounded" style="min-height: 64px">
+                    <div class="container" v-if="lessonDetails !== null">
+                        <div class="row m-2">
+                            <h2 class="text-center align-self-center text-uppercase">
+                                {{ lessonDetails.name }}
+                            </h2>
+                        </div>
+                        <hr>
+                        <div class="row m-2">
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-8">
+                                <div class="text-center m-2">
+                                    <video controls width="400px" :src="lessonDetails.video" style="min-width: 400px"></video>
+                                </div>
+                                <div class="m-2 text-justify">{{ lessonDetails.description }}</div>
+                                <div v-if="lessonDetails.additionalMaterials" class="text-center bg-blue">
+                                    <a :href="lessonDetails.additionalMaterials">Download additional materials here.</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="m-2">
+                                    <button class="btn btn-complete">Complete</button>
                                 </div>
                             </div>
                         </div>
