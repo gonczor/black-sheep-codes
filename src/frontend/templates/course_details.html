@@ -41,8 +41,10 @@
                         <div class="row m-2">
                             <div class="col-lg-2"></div>
                             <div class="col-lg-8">
-                                <div class="text-center m-2">
-                                    <video controls width="400px" :src="lessonDetails.video" style="min-width: 400px"></video>
+                                <div v-if="isLesson()">
+                                    <div class="text-center m-2">
+                                        <video controls width="400px" :src="lessonDetails.video" style="min-width: 400px"></video>
+                                    </div>
                                 </div>
                                 <div class="m-2 text-justify">{{ lessonDetails.description }}</div>
                                 <div v-if="lessonDetails.additionalMaterials" class="text-center bg-blue">

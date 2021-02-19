@@ -22,6 +22,12 @@ const CourseDetailsApp = {
                 }
             );
             this.lessonDetails = response.data;
+        },
+        isLesson(){
+            if (this.lessonDetails === null){
+                return false
+            }
+            return this.lessonDetails.lessonType.toLowerCase() === "lesson";
         }
     },
     data() {
