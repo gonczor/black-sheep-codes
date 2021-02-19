@@ -47,7 +47,10 @@ class LessonViewSet(ModelViewSet):
         return {"user": self.request.user}
 
     @action(
-        detail=True, methods=["PATCH", "POST"], url_path="mark-as-complete", url_name="mark_as_complete"
+        detail=True,
+        methods=["PATCH", "POST"],
+        url_path="mark-as-complete",
+        url_name="mark_as_complete",
     )
     def mark_as_complete(self, request: Request, pk: int) -> Response:
         lesson = self.get_object()
