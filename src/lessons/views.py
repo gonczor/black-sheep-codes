@@ -43,8 +43,11 @@ class LessonViewSet(ModelViewSet):
         else:
             return BaseLessonSerializer
 
+    def get_serializer_context(self):
+        return {"user": self.request.user}
+
     @action(
-        detail=True, methods=["PATCH"], url_path="mark-as-complete", url_name="mark_as_complete"
+        detail=True, methods=["PATCH", "POST"], url_path="mark-as-complete", url_name="mark_as_complete"
     )
     def mark_as_complete(self, request: Request, pk: int) -> Response:
         lesson = self.get_object()
@@ -59,8 +62,8 @@ class LessonViewSet(ModelViewSet):
 
     @action(
         detail=True,
-        methods=["PATCH"],
-        url_path="revert-as-complete",
+        methods=["PATCH", "POST"],
+        url_path="revert-mark-as-complete",
         url_name="revert_mark_as_complete",
     )
     def revert_mark_as_complete(self, request: Request, pk: int) -> Response:

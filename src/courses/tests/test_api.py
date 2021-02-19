@@ -169,11 +169,12 @@ class CourseApiTestCase(CoursesApiBaseTestCase):
                     "lessons": [
                         {
                             "id": lesson.id,
-                            "name": lesson.name
+                            "name": lesson.name,
+                            "isComplete": lesson.is_completed_by(self.user),
                         }
-                    ]
+                    ],
                 }
-            ]
+            ],
         }
         self.client.force_authenticate(self.user)
 

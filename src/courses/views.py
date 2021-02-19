@@ -19,8 +19,8 @@ from courses.serializers import (
     CourseDetailSerializer,
     CourseSectionReorderSerializer,
     CourseSerializer,
-    SignupSerializer,
     CourseWithLessonsSerializer,
+    SignupSerializer,
 )
 
 
@@ -43,6 +43,9 @@ class CourseViewSet(ModelViewSet):
             return CourseWithLessonsSerializer
         else:
             return CourseSerializer
+
+    def get_serializer_context(self):
+        return {"user": self.request.user}
 
     def get_permissions(self):
         permission_classes = self.permission_classes

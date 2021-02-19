@@ -12,9 +12,9 @@ const CourseDetailsApp = {
             this.sections = sectionsList.data.sections;
         },
         async getLessonDetails(event){
-            const lessonId = event.target.dataset.lessonId;
+            this.lessonId = event.target.dataset.lessonId;
             const response = await axios.get(
-                '/api/v1/lessons/' + lessonId + '/',
+                '/api/v1/lessons/' + this.lessonId + '/',
                 {
                     headers: {
                         Authorization: 'Token ' + window.localStorage.token
@@ -22,6 +22,32 @@ const CourseDetailsApp = {
                 }
             );
             this.lessonDetails = response.data;
+        },
+        async markLessonAsComplete(){
+            await axios.post(
+                '/api/v1/lessons/' + this.lessonId + '/mark-as-complete/',
+                {},
+                {
+                    headers: {
+                        Authorization: 'Token ' + window.localStorage.token
+                    }
+                }
+            );
+            this.lessonDetails.isComplete = true;
+            await this.fillSectionsList();
+        },
+        async revertMarkLessonAsComplete(){
+            await axios.post(
+                '/api/v1/lessons/' + this.lessonId + '/revert-mark-as-complete/',
+                {},
+                {
+                    headers: {
+                        Authorization: 'Token ' + window.localStorage.token
+                    }
+                }
+            );
+            this.lessonDetails.isComplete = false;
+            await this.fillSectionsList();
         },
         isLesson(){
             if (this.lessonDetails === null){
@@ -34,7 +60,8 @@ const CourseDetailsApp = {
         return {
             courseId: null,
             sections: [],
-            lessonDetails: null
+            lessonDetails: null,
+            lessonId: null
         }
     },
     mounted() {
@@ -48,10 +75,3 @@ app.config.errorHandler = (error, vm, info) => {
     console.log(error);
 };
 app.mount('#app');
-
-/*
-TODO
-Details can be retrieved from the already
-existing endpoint on lessons. Additionally, I need to remember about showing by default the first
-unfinished course and moving on to the next one on clicking "complete".
- */
