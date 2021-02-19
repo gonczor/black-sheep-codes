@@ -3,6 +3,7 @@ from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.validators import UniqueTogetherValidator
 
 from courses.models import Course, CourseSection, CourseSignup
+from lessons.serializers import ListLessonsSerializer
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -23,6 +24,22 @@ class CourseDetailSerializer(serializers.ModelSerializer):
             return course.small_cover_image.url
         else:
             return course.cover_image.url
+
+
+class CourseSectionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseSection
+        fields = ("id", "name", "lessons")
+
+    lessons = ListLessonsSerializer(many=True)
+
+
+class CourseWithLessonsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ("id", "name", "sections")
+
+    sections = CourseSectionsSerializer(many=True, source="course_sections")
 
 
 class CourseSectionReorderSerializer(serializers.ModelSerializer):
