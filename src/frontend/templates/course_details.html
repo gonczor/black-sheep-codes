@@ -17,8 +17,11 @@
                             <div class="fw-bold bg-blue">
                                 {{ section.name }}
                             </div>
-                            <div v-for="lesson in section.lessons">
-                                <div class="text-center lesson-element" :data-lesson-id="lesson.id">
+                            <div v-for="(lesson, index) in section.lessons">
+                                <div v-if="index !== section.lessons.length-1" class="text-center lesson-element lesson-element-bordered" :data-lesson-id="lesson.id">
+                                    {{ lesson.name }}
+                                </div>
+                                <div v-if="index === section.lessons.length-1" class="text-center lesson-element" :data-lesson-id="lesson.id">
                                     {{ lesson.name }}
                                 </div>
                             </div>

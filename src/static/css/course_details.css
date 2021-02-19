@@ -2,3 +2,10 @@
     background-color: var(--primary-blue);
     cursor: pointer;
 }
+
+
+.lesson-element-bordered {
+    border-bottom: var(--secondary-text-black);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
