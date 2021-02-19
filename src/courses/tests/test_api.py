@@ -8,6 +8,7 @@ from rest_framework.test import APITestCase
 
 from courses.models import Course, CourseSection, CourseSignup
 from courses.signals import cover_image_resize_callback
+from lessons.models import Lesson
 
 
 class CoursesApiBaseTestCase(APITestCase):
@@ -119,6 +120,16 @@ class CoursesApiAccessTestCase(CoursesApiBaseTestCase):
         self.assertIn(self.course.id, ids)
         self.assertNotIn(other_course.id, ids)
 
+    def test_retrieve_assigned_lists_only_own(self):
+        other_course = Course.objects.create(name="Test Course")
+        self.client.force_authenticate(self.user)
+
+        response = self.client.get(
+            reverse("courses:course-retrieve-assigned", args=(other_course.id,))
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 class CourseApiTestCase(CoursesApiBaseTestCase):
     def setUp(self):
@@ -143,6 +154,36 @@ class CourseApiTestCase(CoursesApiBaseTestCase):
             list(self.course.get_coursesection_order().values_list("id", flat=True)),
             [section2.id, section1.id],
         )
+
+    def test_retrieve_assigned_structure(self):
+        course_section = CourseSection.objects.create(course=self.course, name="test section")
+        lesson = Lesson.objects.create(course_section=course_section, name="test_lesson")
+        CourseSignup.objects.create(user=self.user, course=self.course)
+        expected_data = {
+            "id": self.course.id,
+            "name": self.course.name,
+            "sections": [
+                {
+                    "id": course_section.id,
+                    "name": course_section.name,
+                    "lessons": [
+                        {
+                            "id": lesson.id,
+                            "name": lesson.name,
+                            "isComplete": lesson.is_completed_by(self.user),
+                        }
+                    ],
+                }
+            ],
+        }
+        self.client.force_authenticate(self.user)
+
+        response = self.client.get(
+            reverse("courses:course-retrieve-assigned", args=(self.course.id,))
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(response.json(), expected_data)
 
 
 class CoursesSignupApiAccessTestCase(APITestCase):

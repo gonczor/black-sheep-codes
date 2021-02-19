@@ -19,6 +19,7 @@ from courses.serializers import (
     CourseDetailSerializer,
     CourseSectionReorderSerializer,
     CourseSerializer,
+    CourseWithLessonsSerializer,
     SignupSerializer,
 )
 
@@ -29,7 +30,7 @@ class CourseViewSet(ModelViewSet):
 
     def get_queryset(self) -> QuerySet:
         queryset = self.queryset
-        if self.action == "list_assigned":
+        if self.action in {"list_assigned", "retrieve_assigned"}:
             queryset = queryset.filter_signed_up(user=self.request.user)
         return queryset
 
@@ -38,11 +39,17 @@ class CourseViewSet(ModelViewSet):
             return CourseDetailSerializer
         elif self.action == "reorder_sections":
             return CourseSectionReorderSerializer
+        elif self.action == "retrieve_assigned":
+            return CourseWithLessonsSerializer
         else:
             return CourseSerializer
 
+    def get_serializer_context(self):
+        return {"user": self.request.user}
+
     def get_permissions(self):
         permission_classes = self.permission_classes
+        # Only write operations have stricter permissions.
         if self.action == "create":
             permission_classes = [IsAuthenticated, CoursesCreatePermission]
         elif self.action in {"retrieve", "list"}:
@@ -68,6 +75,12 @@ class CourseViewSet(ModelViewSet):
         queryset = self.paginate_queryset(queryset)
         serializer = self.get_serializer(instance=queryset, many=True)
         return self.get_paginated_response(serializer.data)
+
+    @action(detail=True, methods=["GET"], url_path="retrieve-assigned")
+    def retrieve_assigned(self, request: Request, pk: int) -> Response:
+        course = self.get_object()
+        serializer = self.get_serializer(instance=course)
+        return Response(serializer.data)
 
 
 class CourseSignupView(ModelViewSet):

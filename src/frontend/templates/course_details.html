@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% verbatim %}
+
+<div id="app">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="m-2 border rounded">
+                    <a href="/courses/" class="return-link">
+                        <div class="p-2 text-center fw-bold">Back to all courses</div></a>
+                </div>
+                <div class="m-2 border rounded">
+                    <div class="text-center">
+                        <div v-for="section in sections">
+                            <div class="fw-bold bg-blue">
+                                {{ section.name }}
+                            </div>
+                            <div v-for="(lesson, index) in section.lessons">
+                                <div v-if="index !== section.lessons.length-1" v-on:click="getLessonDetails" class="text-center lesson-element lesson-element-bordered" :data-lesson-id="lesson.id">
+                                    {{ lesson.name }} <span v-if="lesson.isComplete">&check;</span>
+                                </div>
+                                <div v-if="index === section.lessons.length-1" v-on:click="getLessonDetails" class="text-center lesson-element" :data-lesson-id="lesson.id">
+                                    {{ lesson.name }} <span v-if="lesson.isComplete">&check;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10">
+                <div class="m-2 p-2 border rounded" style="min-height: 64px">
+                    <div class="container" v-if="lessonDetails !== null">
+                        <div class="row m-2">
+                            <h2 class="text-center align-self-center text-uppercase">
+                                {{ lessonDetails.name }}
+                            </h2>
+                        </div>
+                        <hr>
+                        <div class="row m-2">
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-8">
+                                <div v-if="isLesson()">
+                                    <div class="text-center m-2">
+                                        <video controls width="400px" :src="lessonDetails.video" style="min-width: 400px"></video>
+                                    </div>
+                                </div>
+                                <div class="m-2 text-justify">{{ lessonDetails.description }}</div>
+                                <div v-if="lessonDetails.additionalMaterials" class="text-center bg-blue">
+                                    <a :href="lessonDetails.additionalMaterials">Download additional materials here.</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="m-2" v-if="!lessonDetails.isComplete" v-on:click="markLessonAsComplete()">
+                                    <button class="btn btn-complete">Complete</button>
+                                </div>
+                                <div class="m-2" v-if="lessonDetails.isComplete" v-on:click="revertMarkLessonAsComplete()">
+                                    <button class="btn btn-danger">Incomplete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endverbatim %}
+{% endblock content %}
+
+{% block scripts %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/course_details.css' %}">
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="{% static 'js/axios.min.js' %}"></script>
+    <script src="{% static 'js/course_details.js' %}"></script>
+{% endblock scripts %}

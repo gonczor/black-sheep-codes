@@ -27,7 +27,7 @@ const HelloVueApp = {
         async getCourseDetails(event){
             const courseId = event.target.dataset.id;
             const response = await axios.get(
-                '/api/v1/courses/' + courseId +'/',
+                '/api/v1/courses/' + courseId + '/',
                 {
                     headers: {
                         Authorization: 'Token ' + window.localStorage.token
@@ -79,6 +79,9 @@ const HelloVueApp = {
             );
 
         },
+        redirectToDetails(event) {
+            window.location = '/courses/' + event.target.dataset.id + '/';
+        }
     },
     data() {
         return {
@@ -94,4 +97,8 @@ const HelloVueApp = {
     }
 }
 
-Vue.createApp(HelloVueApp).mount('#courses-list');
+const app = Vue.createApp(HelloVueApp)
+app.config.errorHandler = (error, vm, info) => {
+    console.log(error);
+};
+app.mount('#courses-list');
