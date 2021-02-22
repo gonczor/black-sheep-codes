@@ -1,8 +1,11 @@
+from collections import defaultdict
+
+from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 from rest_polymorphic.serializers import PolymorphicSerializer
 
-from lessons.models import BaseLesson, Exercise, Lesson, Test
+from lessons.models import Answer, BaseLesson, Exercise, Lesson, Test, TestQuestion
 
 
 class LessonSerializer(ModelSerializer):
@@ -31,10 +34,43 @@ class ExerciseSerializer(ModelSerializer):
         fields = "__all__"
 
 
-class TestSerializer(ModelSerializer):
+class AnswersSerializer(WritableNestedModelSerializer):
+    class Meta:
+        model = Answer
+        fields = (
+            "id",
+            "text",
+            "is_correct",
+        )
+
+
+class QuestionsSerializer(WritableNestedModelSerializer):
+    class Meta:
+        model = TestQuestion
+        fields = (
+            "id",
+            "text",
+            "answers",
+        )
+
+    answers = AnswersSerializer(
+        many=True,
+    )
+
+
+class TestSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Test
-        fields = "__all__"
+        fields = (
+            "id",
+            "name",
+            "course_section",
+            "questions",
+        )
+
+    questions = QuestionsSerializer(many=True)
+
+    _save_kwargs = defaultdict(dict)
 
 
 class BaseLessonSerializer(PolymorphicSerializer):
