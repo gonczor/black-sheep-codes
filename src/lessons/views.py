@@ -1,6 +1,6 @@
 from typing import Type
 
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.db.models import QuerySet
 from rest_framework import status
 from rest_framework.decorators import action
@@ -45,6 +45,10 @@ class LessonViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return {"user": self.request.user}
+
+    @transaction.atomic()
+    def create(self, request: Request, *args, **kwargs) -> Response:
+        return super().create(request, *args, **kwargs)
 
     @action(
         detail=True,
