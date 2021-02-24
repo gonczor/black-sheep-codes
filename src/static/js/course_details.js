@@ -54,6 +54,12 @@ const CourseDetailsApp = {
                 return false
             }
             return this.lessonDetails.lessonType.toLowerCase() === "lesson";
+        },
+        isTest(){
+            if (this.lessonDetails === null){
+                return false
+            }
+            return this.lessonDetails.lessonType.toLowerCase() === "test";
         }
     },
     data() {
