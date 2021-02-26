@@ -31,7 +31,17 @@ class LessonSerializer(ModelSerializer):
 class ExerciseSerializer(ModelSerializer):
     class Meta:
         model = Exercise
-        fields = "__all__"
+        fields = (
+            "id",
+            "name",
+            "is_complete",
+        )
+        read_only_fields = ("is_complete",)
+
+    is_complete = SerializerMethodField()
+
+    def get_is_complete(self, lesson: BaseLesson) -> bool:
+        return lesson.is_completed_by(user=self.context["user"])
 
 
 class AnswersSerializer(WritableNestedModelSerializer):
@@ -66,11 +76,16 @@ class TestSerializer(WritableNestedModelSerializer):
             "name",
             "course_section",
             "questions",
+            "is_complete",
         )
 
     questions = QuestionsSerializer(many=True)
+    is_complete = SerializerMethodField()
 
     _save_kwargs = defaultdict(dict)
+
+    def get_is_complete(self, lesson: BaseLesson) -> bool:
+        return lesson.is_completed_by(user=self.context["user"])
 
 
 class BaseLessonSerializer(PolymorphicSerializer):
