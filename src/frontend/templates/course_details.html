@@ -46,6 +46,25 @@
                                         <video controls width="400px" :src="lessonDetails.video" style="min-width: 400px"></video>
                                     </div>
                                 </div>
+                                <div v-if="isTest()">
+                                    <div v-if="!isBeyondLastQuestion()">
+                                        <fieldset :id="currentTestQuestion.id">
+                                            <legend>{{ currentTestQuestion.text }}</legend>
+                                            <div v-for="answer in currentTestQuestion.answers">
+                                                <input type="radio" name="answer" :id="answer.id" :value="answer.id" class="m-2" @click="selectAnswer"/><label :for="answer.id" v-html="answer.text" class="m-2" :id="'answer-' + answer.id"></label><br />
+                                            </div>
+                                            <button class="btn bg-blue m-2" v-on:click="checkAnswer">Check</button>
+                                            <button class="btn bg-light m-2" v-on:click="moveToNextQuestion()">Next &#8594;</button>
+                                            <button class="btn bg-light m-2" v-on:click="moveToPreviousQuestion()">Previous &#8592;</button>
+                                        </fieldset>
+                                    </div>
+                                    <div v-if="isBeyondLastQuestion()">
+                                        This was the last question. Your score is:
+                                    </div>
+                                    <div class="m-2 text-center">
+                                        {{ getCorrectAnswersCounter() }}
+                                    </div>
+                                </div>
                                 <div class="m-2 text-justify">{{ lessonDetails.description }}</div>
                                 <div v-if="lessonDetails.additionalMaterials" class="text-center bg-blue">
                                     <a :href="lessonDetails.additionalMaterials">Download additional materials here.</a>

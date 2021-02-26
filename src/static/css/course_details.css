@@ -21,3 +21,11 @@
 .btn-incomplete {
     background-color: var(--primary-red);
 }
+
+.correct-answer {
+    background-color: var(--secondary-green);
+}
+
+.incorrect-answer {
+    background-color: var(--secondary-red);
+}
