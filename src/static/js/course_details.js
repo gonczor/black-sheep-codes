@@ -38,10 +38,10 @@ const CourseDetailsApp = {
                     answers: value.answers,
                     markedCorrect: false
                 });
-                if(this.lessonDetails.questions.length > 0){
-                    this.setCurrentTestQuestion();
-                }
             });
+            if(this.lessonDetails.questions.length > 0){
+                this.setCurrentTestQuestion();
+            }
         },
         async markLessonAsComplete(){
             await axios.post(
