@@ -45,6 +45,11 @@ class BaseLesson(PolymorphicModel):
         order_with_respect_to = "course_section"
 
     def is_completed_by(self, user: settings.AUTH_USER_MODEL) -> bool:
+        # is_completed is annotated in with_completed_annotations queryset method.
+        # However, if the queryset was not annotated, there's a fallback that performs this check.
+        # Keep in mind it is far less efficient.
+        if (completed := getattr(self, "is_completed", None)) is not None:
+            return completed
         return CompletedLesson.objects.filter(lesson=self, user=user).exists()
 
     def complete(self, user: settings.AUTH_USER_MODEL):

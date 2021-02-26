@@ -23,6 +23,8 @@ class LessonViewSet(ModelViewSet):
     queryset = BaseLesson.objects.all()
 
     def get_queryset(self) -> QuerySet:
+        if self.action == "list":
+            self.queryset = self.queryset.with_completed_annotations(user=self.request.user)
         if not self.request.user.is_staff and not self.request.user.is_superuser:
             return self.queryset.filter(course_section__course__signups__user=self.request.user)
         return self.queryset
