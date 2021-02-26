@@ -4,10 +4,11 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 from courses.models import CourseSignup
+from lessons.models import Answer, Test, TestQuestion
 from lessons.tests import BaseLessonTestCase
 
 
-class LessonAPITestCase(BaseLessonTestCase, APITestCase):
+class LessonAPITestCase(APITestCase, BaseLessonTestCase):
     def setUp(self):
         super().setUp()
         self.mark_as_complete_url = reverse(
@@ -16,6 +17,7 @@ class LessonAPITestCase(BaseLessonTestCase, APITestCase):
         self.revert_mark_as_complete_url = reverse(
             "lessons:lesson-revert_mark_as_complete", args=(self.lesson.id,)
         )
+        self.lesson_create_url = reverse("lessons:lesson-list")
         User = get_user_model()
         self.user = User.objects.create_user(
             username="test", email="test@example.com", password="test"
@@ -45,3 +47,38 @@ class LessonAPITestCase(BaseLessonTestCase, APITestCase):
         response = self.client.patch(self.mark_as_complete_url)
 
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+    def test_nested_test_lesson_serializer(self):
+        self.user.is_superuser = True
+        self.user.save()
+        create_data = {
+            "course_section": self.course_section.id,
+            "name": "Some Test",
+            "lesson_type": "Test",
+            "questions": [
+                {
+                    "text": 'How to print "Hello, world!"?',
+                    "answers": [
+                        {"text": 'System.out.println("Hello, world!");', "is_correct": False},
+                        {"text": 'print("Hello, world!")', "is_correct": True},
+                    ],
+                },
+            ],
+        }
+        self.client.force_authenticate(self.user)
+
+        import json
+
+        create_data = json.dumps(create_data)
+        response = self.client.post(
+            self.lesson_create_url, data=create_data, content_type="application/json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Test.objects.filter(course_section=self.course_section).exists())
+        self.assertTrue(
+            TestQuestion.objects.filter(test__course_section=self.course_section).exists()
+        )
+        self.assertEqual(
+            Answer.objects.filter(question__test__course_section=self.course_section).count(), 2
+        )

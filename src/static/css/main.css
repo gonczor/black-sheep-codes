@@ -1,7 +1,9 @@
 :root {
     --primary-blue: rgb(162, 216, 250);
     --primary-green: rgb(123, 206, 116);
+    --secondary-green: rgba(146, 208, 141, 0.3);
     --primary-red: rgb(206, 116, 116);
+    --secondary-red: rgba(206, 145, 145, 0.3);
     --secondary-blue: rgb(115, 155, 184);
     --primary-white: antiquewhite;
     --primary-text-black: #202020;

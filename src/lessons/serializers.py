@@ -1,8 +1,11 @@
+from collections import defaultdict
+
+from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 from rest_polymorphic.serializers import PolymorphicSerializer
 
-from lessons.models import BaseLesson, Exercise, Lesson, Test
+from lessons.models import Answer, BaseLesson, Exercise, Lesson, Test, TestQuestion
 
 
 class LessonSerializer(ModelSerializer):
@@ -28,13 +31,61 @@ class LessonSerializer(ModelSerializer):
 class ExerciseSerializer(ModelSerializer):
     class Meta:
         model = Exercise
-        fields = "__all__"
+        fields = (
+            "id",
+            "name",
+            "is_complete",
+        )
+        read_only_fields = ("is_complete",)
+
+    is_complete = SerializerMethodField()
+
+    def get_is_complete(self, lesson: BaseLesson) -> bool:
+        return lesson.is_completed_by(user=self.context["user"])
 
 
-class TestSerializer(ModelSerializer):
+class AnswersSerializer(WritableNestedModelSerializer):
+    class Meta:
+        model = Answer
+        fields = (
+            "id",
+            "text",
+            "is_correct",
+        )
+
+
+class QuestionsSerializer(WritableNestedModelSerializer):
+    class Meta:
+        model = TestQuestion
+        fields = (
+            "id",
+            "text",
+            "answers",
+        )
+
+    answers = AnswersSerializer(
+        many=True,
+    )
+
+
+class TestSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Test
-        fields = "__all__"
+        fields = (
+            "id",
+            "name",
+            "course_section",
+            "questions",
+            "is_complete",
+        )
+
+    questions = QuestionsSerializer(many=True)
+    is_complete = SerializerMethodField()
+
+    _save_kwargs = defaultdict(dict)
+
+    def get_is_complete(self, lesson: BaseLesson) -> bool:
+        return lesson.is_completed_by(user=self.context["user"])
 
 
 class BaseLessonSerializer(PolymorphicSerializer):

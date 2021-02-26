@@ -1,5 +1,6 @@
 from django.db.models import (
     CASCADE,
+    BooleanField,
     CharField,
     DateTimeField,
     FileField,
@@ -52,6 +53,17 @@ class Exercise(BaseLesson):
 
 class Test(BaseLesson):
     pass
+
+
+class TestQuestion(Model):
+    test = ForeignKey("Test", on_delete=CASCADE, related_name="questions")
+    text = TextField()
+
+
+class Answer(Model):
+    question = ForeignKey("TestQuestion", on_delete=CASCADE, related_name="answers")
+    text = TextField()
+    is_correct = BooleanField(default=False)
 
 
 class CompletedLesson(Model):
