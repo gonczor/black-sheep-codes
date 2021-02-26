@@ -6,7 +6,7 @@ from django.db.models import (
     FileField,
     ForeignKey,
     Model,
-    TextField,
+    TextField, QuerySet, Case, When, Value, OuterRef, Exists,
 )
 from polymorphic.models import PolymorphicModel
 
@@ -22,10 +22,24 @@ def get_lesson_additional_materials_upload_directory(lesson: "Lesson", filename:
     return f"additional_materials/lessons/{lesson.id}/{filename}"
 
 
+class BaseLessonQuerySet(QuerySet):
+    def with_completed_annotations(self, user: settings.AUTH_USER_MODEL):
+        completed_lesson = CompletedLesson.objects.filter(user=user, lesson=OuterRef('pk'))
+        return self.annotate(
+            is_completed=Case(
+                When(Exists(completed_lesson), then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        )
+
+
 class BaseLesson(PolymorphicModel):
     name = CharField(max_length=64)
     course_section = ForeignKey(CourseSection, on_delete=CASCADE, related_name="lessons")
     description = TextField(blank=True)
+
+    objects = BaseLessonQuerySet.as_manager()
 
     class Meta:
         order_with_respect_to = "course_section"
