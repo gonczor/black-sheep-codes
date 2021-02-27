@@ -65,3 +65,6 @@ class LessonModelsTestCase(BaseLessonTestCase, TestCase):
 
         with self.assertRaises(IntegrityError):
             lesson.complete(user)
+
+    def test_annotate_completed_marks_correct_lesson(self):
+        pass

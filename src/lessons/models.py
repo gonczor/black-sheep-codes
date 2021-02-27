@@ -8,7 +8,9 @@ from django.db.models import (
     Model,
     TextField, QuerySet, Case, When, Value, OuterRef, Exists,
 )
+from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
+from polymorphic.query import PolymorphicQuerySet
 
 from courses.models import CourseSection
 from settings import settings
@@ -22,7 +24,7 @@ def get_lesson_additional_materials_upload_directory(lesson: "Lesson", filename:
     return f"additional_materials/lessons/{lesson.id}/{filename}"
 
 
-class BaseLessonQuerySet(QuerySet):
+class BaseLessonQuerySet(PolymorphicQuerySet):
     def with_completed_annotations(self, user: settings.AUTH_USER_MODEL):
         completed_lesson = CompletedLesson.objects.filter(user=user, lesson=OuterRef('pk'))
         return self.annotate(
@@ -39,7 +41,7 @@ class BaseLesson(PolymorphicModel):
     course_section = ForeignKey(CourseSection, on_delete=CASCADE, related_name="lessons")
     description = TextField(blank=True)
 
-    objects = BaseLessonQuerySet.as_manager()
+    objects = PolymorphicManager.from_queryset(BaseLessonQuerySet)()
 
     class Meta:
         order_with_respect_to = "course_section"

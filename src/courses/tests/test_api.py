@@ -185,6 +185,9 @@ class CourseApiTestCase(CoursesApiBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(response.json(), expected_data)
 
+    def test_retrieve_assigned_number_of_queries(self):
+        pass
+
 
 class CoursesSignupApiAccessTestCase(APITestCase):
     def setUp(self):

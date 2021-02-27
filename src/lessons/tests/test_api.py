@@ -82,3 +82,6 @@ class LessonAPITestCase(APITestCase, BaseLessonTestCase):
         self.assertEqual(
             Answer.objects.filter(question__test__course_section=self.course_section).count(), 2
         )
+
+    def test_number_of_queries(self):
+        pass
