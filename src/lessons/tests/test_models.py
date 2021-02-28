@@ -71,10 +71,10 @@ class LessonModelsTestCase(BaseLessonTestCase, TestCase):
         user = User.objects.create_user(username="test", email="test@example.com", password="test")
 
         for lesson in BaseLesson.objects.all().with_completed_annotations(user=user):
-            self.assertFalse(lesson.is_completed_by(user))
+            self.assertFalse(lesson.is_completed)
 
         for lesson in BaseLesson.objects.all():
             lesson.complete(user)
 
         for lesson in BaseLesson.objects.all().with_completed_annotations(user=user):
-            self.assertTrue(lesson.is_completed_by(user))
+            self.assertTrue(lesson.is_completed)
