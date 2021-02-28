@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 from parameterized import parameterized
 
-from lessons.models import Exercise, Lesson, Test
+from lessons.models import BaseLesson, Exercise, Lesson, Test
 from lessons.tests import BaseLessonTestCase
 
 
@@ -65,3 +65,16 @@ class LessonModelsTestCase(BaseLessonTestCase, TestCase):
 
         with self.assertRaises(IntegrityError):
             lesson.complete(user)
+
+    def test_annotate_completed(self):
+        User = get_user_model()
+        user = User.objects.create_user(username="test", email="test@example.com", password="test")
+
+        for lesson in BaseLesson.objects.all().with_completed_annotations(user=user):
+            self.assertFalse(lesson.is_completed)
+
+        for lesson in BaseLesson.objects.all():
+            lesson.complete(user)
+
+        for lesson in BaseLesson.objects.all().with_completed_annotations(user=user):
+            self.assertTrue(lesson.is_completed)

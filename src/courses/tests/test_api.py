@@ -185,6 +185,17 @@ class CourseApiTestCase(CoursesApiBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(response.json(), expected_data)
 
+    def test_retrieve_assigned_number_of_queries(self):
+        course_section = CourseSection.objects.create(course=self.course, name="test section")
+        Lesson.objects.create(course_section=course_section, name="test_lesson")
+        CourseSignup.objects.create(user=self.user, course=self.course)
+        self.client.force_authenticate(self.user)
+
+        # previously there were 5
+        with self.assertNumQueries(4):
+            r = self.client.get(reverse("courses:course-retrieve-assigned", args=(self.course.id,)))
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+
 
 class CoursesSignupApiAccessTestCase(APITestCase):
     def setUp(self):

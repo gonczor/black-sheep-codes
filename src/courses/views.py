@@ -31,8 +31,10 @@ class CourseViewSet(ModelViewSet):
     def get_queryset(self) -> QuerySet:
         queryset = self.queryset
         if self.action in {"list_assigned", "retrieve_assigned"}:
-            queryset = queryset.filter_signed_up(user=self.request.user)
-        return queryset
+            queryset = queryset.filter_signed_up(user=self.request.user).with_completed_lessons(
+                user=self.request.user
+            )
+        return queryset.only("id", "name", "description", "cover_image", "small_cover_image")
 
     def get_serializer_class(self) -> Type[Serializer]:
         if self.action == "retrieve":
