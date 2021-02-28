@@ -1,6 +1,6 @@
 from typing import Type
 
-from django.db.models import Prefetch, QuerySet
+from django.db.models import QuerySet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -22,7 +22,6 @@ from courses.serializers import (
     CourseWithLessonsSerializer,
     SignupSerializer,
 )
-from lessons.models import BaseLesson
 
 
 class CourseViewSet(ModelViewSet):
@@ -32,14 +31,8 @@ class CourseViewSet(ModelViewSet):
     def get_queryset(self) -> QuerySet:
         queryset = self.queryset
         if self.action in {"list_assigned", "retrieve_assigned"}:
-            queryset = queryset.filter_signed_up(user=self.request.user).prefetch_related(
-                "course_sections",
-                Prefetch(
-                    "course_sections__lessons",
-                    queryset=BaseLesson.objects.all().with_completed_annotations(
-                        user=self.request.user
-                    ),
-                ),
+            queryset = queryset.filter_signed_up(user=self.request.user).with_completed_lessons(
+                user=self.request.user
             )
         return queryset.only("id", "name", "description", "cover_image", "small_cover_image")
 
