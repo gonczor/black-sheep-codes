@@ -4,7 +4,7 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 from courses.models import CourseSignup
-from lessons.models import Answer, Test, TestQuestion, Lesson
+from lessons.models import Answer, Lesson, Test, TestQuestion
 from lessons.tests import BaseLessonTestCase
 
 

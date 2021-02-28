@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 from parameterized import parameterized
 
-from lessons.models import Exercise, Lesson, Test, BaseLesson
+from lessons.models import BaseLesson, Exercise, Lesson, Test
 from lessons.tests import BaseLessonTestCase
 
 

@@ -1,6 +1,6 @@
 from typing import Type
 
-from django.db.models import QuerySet, Prefetch
+from django.db.models import Prefetch, QuerySet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -35,11 +35,11 @@ class CourseViewSet(ModelViewSet):
             queryset = queryset.filter_signed_up(user=self.request.user).prefetch_related(
                 "course_sections",
                 Prefetch(
-                    'course_sections__lessons',
+                    "course_sections__lessons",
                     queryset=BaseLesson.objects.all().with_completed_annotations(
                         user=self.request.user
-                    )
-                )
+                    ),
+                ),
             )
         return queryset.only("id", "name", "description", "cover_image", "small_cover_image")
 

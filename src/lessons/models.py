@@ -1,12 +1,18 @@
 from django.db.models import (
     CASCADE,
     BooleanField,
+    Case,
     CharField,
     DateTimeField,
+    Exists,
     FileField,
     ForeignKey,
     Model,
-    TextField, QuerySet, Case, When, Value, OuterRef, Exists,
+    OuterRef,
+    QuerySet,
+    TextField,
+    Value,
+    When,
 )
 from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
@@ -26,12 +32,12 @@ def get_lesson_additional_materials_upload_directory(lesson: "Lesson", filename:
 
 class BaseLessonQuerySet(PolymorphicQuerySet):
     def with_completed_annotations(self, user: settings.AUTH_USER_MODEL):
-        completed_lesson = CompletedLesson.objects.filter(user=user, lesson=OuterRef('pk'))
+        completed_lesson = CompletedLesson.objects.filter(user=user, lesson=OuterRef("pk"))
         return self.annotate(
             is_completed=Case(
                 When(Exists(completed_lesson), then=Value(True)),
                 default=Value(False),
-                output_field=BooleanField()
+                output_field=BooleanField(),
             )
         )
 
