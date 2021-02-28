@@ -4,7 +4,7 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 from courses.models import CourseSignup
-from lessons.models import Answer, Test, TestQuestion
+from lessons.models import Answer, Test, TestQuestion, Lesson
 from lessons.tests import BaseLessonTestCase
 
 
@@ -83,5 +83,9 @@ class LessonAPITestCase(APITestCase, BaseLessonTestCase):
             Answer.objects.filter(question__test__course_section=self.course_section).count(), 2
         )
 
-    def test_number_of_queries(self):
-        pass
+    def test_number_of_queries_on_list(self):
+        self.client.force_authenticate(self.user)
+
+        # Without prefetch there were 8.
+        with self.assertNumQueries(5):
+            self.client.get(self.lesson_create_url)
