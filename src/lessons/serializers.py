@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Dict
 
 from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework.fields import SerializerMethodField
@@ -82,7 +83,7 @@ class TestSerializer(WritableNestedModelSerializer):
     questions = QuestionsSerializer(many=True)
     is_complete = SerializerMethodField()
 
-    _save_kwargs = defaultdict(dict)
+    _save_kwargs: Dict = defaultdict(dict)
 
     def get_is_complete(self, lesson: BaseLesson) -> bool:
         return lesson.is_completed_by(user=self.context["user"])

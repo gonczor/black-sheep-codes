@@ -9,7 +9,6 @@ from django.db.models import (
     ForeignKey,
     Model,
     OuterRef,
-    QuerySet,
     TextField,
     Value,
     When,
@@ -18,8 +17,8 @@ from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
 from polymorphic.query import PolymorphicQuerySet
 
+from auth_ex.models import User
 from courses.models import CourseSection
-from settings import settings
 
 
 def get_lesson_video_upload_directory(lesson: "Lesson", filename: str) -> str:
@@ -31,7 +30,7 @@ def get_lesson_additional_materials_upload_directory(lesson: "Lesson", filename:
 
 
 class BaseLessonQuerySet(PolymorphicQuerySet):
-    def with_completed_annotations(self, user: settings.AUTH_USER_MODEL):
+    def with_completed_annotations(self, user: User):
         completed_lesson = CompletedLesson.objects.filter(user=user, lesson=OuterRef("pk"))
         return self.annotate(
             is_completed=Case(
@@ -52,7 +51,7 @@ class BaseLesson(PolymorphicModel):
     class Meta:
         order_with_respect_to = "course_section"
 
-    def is_completed_by(self, user: settings.AUTH_USER_MODEL) -> bool:
+    def is_completed_by(self, user: User) -> bool:
         # is_completed is annotated in with_completed_annotations queryset method.
         # However, if the queryset was not annotated, there's a fallback that performs this check.
         # Keep in mind it is far less efficient.
@@ -60,10 +59,10 @@ class BaseLesson(PolymorphicModel):
             return completed
         return CompletedLesson.objects.filter(lesson=self, user=user).exists()
 
-    def complete(self, user: settings.AUTH_USER_MODEL):
+    def complete(self, user: User):
         CompletedLesson.objects.create(lesson=self, user=user)
 
-    def revert_complete(self, user: settings.AUTH_USER_MODEL):
+    def revert_complete(self, user: User):
         CompletedLesson.objects.filter(lesson=self, user=user).delete()
 
 
@@ -95,7 +94,7 @@ class Answer(Model):
 
 class CompletedLesson(Model):
     lesson = ForeignKey(BaseLesson, on_delete=CASCADE)
-    user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
+    user = ForeignKey(User, on_delete=CASCADE)
     created = DateTimeField(auto_now_add=True)
 
     class Meta:
