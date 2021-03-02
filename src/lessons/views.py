@@ -1,15 +1,17 @@
 from typing import Type
 
-from django.db import IntegrityError, transaction
+from django.db import transaction
 from django.db.models import QuerySet
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
+from common.exceptions import ProcessingException, ProcessingApiException
 from lessons.models import BaseLesson
 from lessons.permissions import (
     LessonCreatePermission,
@@ -62,11 +64,8 @@ class LessonViewSet(ModelViewSet):
         lesson = self.get_object()
         try:
             lesson.complete(user=self.request.user)
-        except IntegrityError:
-            return Response(
-                status=status.HTTP_409_CONFLICT,
-                data={"non_field_errors": ["Already marked as complete."]},
-            )
+        except ProcessingException as e:
+            raise ProcessingApiException(detail=e.detail) from e
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(

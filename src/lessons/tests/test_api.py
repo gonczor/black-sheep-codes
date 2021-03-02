@@ -46,7 +46,7 @@ class LessonAPITestCase(APITestCase, BaseLessonTestCase):
 
         response = self.client.patch(self.mark_as_complete_url)
 
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     def test_nested_test_lesson_serializer(self):
         self.user.is_superuser = True

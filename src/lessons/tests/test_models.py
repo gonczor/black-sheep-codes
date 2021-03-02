@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 from parameterized import parameterized
 
+from common.exceptions import ProcessingException
 from lessons.models import BaseLesson, Exercise, Lesson, Test
 from lessons.tests import BaseLessonTestCase
 
@@ -63,7 +64,7 @@ class LessonModelsTestCase(BaseLessonTestCase, TestCase):
         lesson = getattr(self, lesson_type)
         lesson.complete(user)
 
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(ProcessingException):
             lesson.complete(user)
 
     def test_annotate_completed(self):
