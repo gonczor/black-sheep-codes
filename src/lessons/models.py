@@ -9,7 +9,6 @@ from django.db.models import (
     ForeignKey,
     Model,
     OuterRef,
-    QuerySet,
     TextField,
     Value,
     When,
