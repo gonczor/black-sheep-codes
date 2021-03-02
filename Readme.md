@@ -11,6 +11,47 @@ Project currently relies on Django and Django Rest Framework with PostgreSQL as 
 
 This is a monolithic service that exposes both frontend stuff and REST API. Frontend stuff can be found in `src/frontend` directory. API calls are made under `/api/v1/<endpoint>`. Currently they are undocumented.
 
+## Error handling
+
+In case of non-trivial logic, i.e. when ready methods delivered by DRF or Django need to be overloaded, custom error handling is implemented. It's goal is to hide low-level details behind a generic Exceptions understood by views. Example errors I want to hide are:
+ - KeyError
+ - BotoCoreError
+ - IntegrityError
+  
+Such errors are translated to `ProcessingException` and this to `ProcessingApiException` which inherits from `APIException`.
+
+Example:
+
+`models.py`:
+```python
+class BaseLesson(PolymorphicModel):
+    # ...
+    def complete(self, user: User):
+        try:
+            CompletedLesson.objects.create(lesson=self, user=user)
+        except IntegrityError as e:
+            raise ProcessingException(detail="Already marked as complete.") from e
+```
+
+`views.py`:
+```python
+class LessonViewSet(ModelViewSet):
+    # ...
+    @action(
+        detail=True,
+        methods=["PATCH", "POST"],
+        url_path="mark-as-complete",
+        url_name="mark_as_complete",
+    )
+    def mark_as_complete(self, request: Request, pk: int) -> Response:
+        lesson = self.get_object()
+        try:
+            lesson.complete(user=self.request.user)
+        except ProcessingException as e:
+            raise ProcessingApiException(detail=e.detail) from e
+        return Response(status=status.HTTP_204_NO_CONTENT)
+```
+
 # Project setup
 
 ## Prerequisites

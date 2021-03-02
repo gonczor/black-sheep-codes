@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.db.models import (
     CASCADE,
     BooleanField,
@@ -13,7 +14,6 @@ from django.db.models import (
     Value,
     When,
 )
-from django.db import IntegrityError
 from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
 from polymorphic.query import PolymorphicQuerySet

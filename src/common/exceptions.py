@@ -4,7 +4,7 @@ from rest_framework.exceptions import APIException
 
 
 class ProcessingException(Exception):
-    default_detail = _('Can\'t process the request.')
+    default_detail = _("Can't process the request.")
     detail = None
 
     def __init__(self, detail=None):

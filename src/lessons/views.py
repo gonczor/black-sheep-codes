@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
-from common.exceptions import ProcessingException, ProcessingApiException
+from common.exceptions import ProcessingApiException, ProcessingException
 from lessons.models import BaseLesson
 from lessons.permissions import (
     LessonCreatePermission,
