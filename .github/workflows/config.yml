@@ -25,3 +25,5 @@ jobs:
         run: docker-compose run web isort --check .
       - name: Black
         run: docker-compose run web black --check --diff .
+      - name: MyPy
+        run: docker-compose run web mypy .
