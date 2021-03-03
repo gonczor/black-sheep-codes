@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.db.models import (
     CASCADE,
     BooleanField,
@@ -18,6 +19,7 @@ from polymorphic.models import PolymorphicModel
 from polymorphic.query import PolymorphicQuerySet
 
 from auth_ex.models import User
+from common.exceptions import ProcessingException
 from courses.models import CourseSection
 
 
@@ -60,7 +62,10 @@ class BaseLesson(PolymorphicModel):
         return CompletedLesson.objects.filter(lesson=self, user=user).exists()
 
     def complete(self, user: User):
-        CompletedLesson.objects.create(lesson=self, user=user)
+        try:
+            CompletedLesson.objects.create(lesson=self, user=user)
+        except IntegrityError as e:
+            raise ProcessingException(detail="Already marked as complete.") from e
 
     def revert_complete(self, user: User):
         CompletedLesson.objects.filter(lesson=self, user=user).delete()
