@@ -55,6 +55,28 @@ window.addEventListener( "load", function () {
     XHR.send(JSON.stringify(data));
   }
 
+  function redirectIfLoggedIn(){
+    let token = localStorage.getItem("token");
+    if (token === null){
+      // No token, no redirect.
+      return;
+    }
+    const XHR = new XMLHttpRequest();
+    XHR.open( "GET", "/api/v1/auth/users/me/" );
+    XHR.setRequestHeader('Content-Type', 'application/json;');
+    XHR.setRequestHeader('Authorization', 'Token ' + token);
+    XHR.addEventListener("load", (event) => {
+      if (event.target.status === 200){
+        window.location = "/courses/";
+      } else {
+        // Token is invalid, we can remove it.
+        localStorage.removeItem("token");
+      }
+    });
+    XHR.send();
+  }
+  redirectIfLoggedIn();
+
   const accountCreationForm = document.getElementById( "accountCreationForm" );
   if (accountCreationForm !== null){
     accountCreationForm.addEventListener( "submit", function ( event ) {
