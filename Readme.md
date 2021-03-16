@@ -58,6 +58,10 @@ class LessonViewSet(ModelViewSet):
 
 You need to know Python or JS and have docker-compose installed.
 
+## Docs
+
+Documentation can be found under `localhost:8000/docs/` endpoint. Requires `DEBUG` to be set to be to `True`.
+
 ## Steps
 
  1. Copy `.env.example` file to `.env`. It should contain all necessary variables set for local development.
