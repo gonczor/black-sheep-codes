@@ -38,7 +38,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("", include("frontend.urls")),
-    url("health/", health_check),
+    re_path("health/", health_check),
     path("admin/", admin.site.urls),
     path("api/v1/auth/", include("djoser.urls")),
     path("api/v1/auth/", include("djoser.urls.authtoken")),
