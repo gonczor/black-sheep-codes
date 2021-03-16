@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "djoser",
     "rest_framework",
     "rest_framework.authtoken",
+    "drf_yasg",
     "storages",
     "auth_ex",
     "aws",
