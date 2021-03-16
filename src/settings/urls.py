@@ -14,22 +14,50 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
 from aws.views import health_check
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Black Sheep Codes Documentation",
+        default_version="V1",
+        license=openapi.License(
+            name="GNU GPL V 3", url="https://www.gnu.org/licenses/gpl-3.0.en.html"
+        ),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
 urlpatterns = [
     path("", include("frontend.urls")),
-    url("health/", health_check),
+    re_path("health/", health_check),
     path("admin/", admin.site.urls),
     path("api/v1/auth/", include("djoser.urls")),
     path("api/v1/auth/", include("djoser.urls.authtoken")),
     path("api/v1/", include("courses.urls")),
     path("api/v1/", include("lessons.urls")),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(
+            r"^swagger(?P<format>\.json|\.yaml)$",
+            schema_view.without_ui(cache_timeout=0),
+            name="schema-json",
+        ),
+        re_path(
+            r"^swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"
+        ),
+        re_path(r"^docs/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    ]
+
 
 if not settings.AWS_STORAGE_BUCKET_NAME:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
