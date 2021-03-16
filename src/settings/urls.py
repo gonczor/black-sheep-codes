@@ -25,12 +25,11 @@ from aws.views import health_check
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Snippets API",
-        default_version="v1",
-        description="Test description",
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
-        license=openapi.License(name="BSD License"),
+        title="Black Sheep Codes Documentation",
+        default_version="V1",
+        license=openapi.License(
+            name="GNU GPL V 3", url="https://www.gnu.org/licenses/gpl-3.0.en.html"
+        ),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
