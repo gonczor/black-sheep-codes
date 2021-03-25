@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "auth_ex",
     "aws",
     "courses",
+    "comments",
     "frontend",
     "lessons",
 ]
