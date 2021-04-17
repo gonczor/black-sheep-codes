@@ -1,5 +1,5 @@
 boto3==1.17.17
-django==3.1.7
+django==3.1.8
 django-environ==0.4.5
 django-polymorphic==3.0.0
 django-storages==1.11.1
