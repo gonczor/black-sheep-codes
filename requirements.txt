@@ -13,7 +13,7 @@ mypy==0.812
 psycopg2-binary==2.8.6
 rollbar==0.15.1
 gunicorn==20.0.4
-Pillow==8.1.1
+Pillow==8.2.0
 celery[redis]==5.0.5
 django-celery-results==2.0.1
 isort==5.7.0
