@@ -30,6 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
+logging.basicConfig(level=logging.INFO)
 logging.info("is_prod: %s", not DEBUG)
 
 retriever = RetrieverFactory(is_prod=not DEBUG).create_retriever()
@@ -163,6 +164,7 @@ if env.bool("LOG_DB", False):
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default=None)
+logging.info("AWS_STORAGE_BUCKET_NAME = %s", AWS_STORAGE_BUCKET_NAME)
 if AWS_STORAGE_BUCKET_NAME is not None:
     AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
     AWS_S3_OBJECT_PARAMETERS = {
