@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
+import logging
 from pathlib import Path
 
 import environ
@@ -28,6 +29,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
+
+logging.info("is_prod: %s", not DEBUG)
 
 retriever = RetrieverFactory(is_prod=not DEBUG).create_retriever()
 SECRET_KEY = retriever.retrieve("SECRET_KEY")
