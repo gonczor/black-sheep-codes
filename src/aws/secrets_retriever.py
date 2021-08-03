@@ -9,7 +9,6 @@ logging.basicConfig(level=logging.INFO)
 
 class SSMSecretsRetriever(BaseSecretsRetriever):
     def __init__(self):
-        logging.info("Initializing SSMSecretsRetriever")
         region_name = "eu-central-1"
         self._common_prefix = "/BlackSheepLearns/dev/"
         # Create a Secrets Manager client
