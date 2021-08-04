@@ -11,14 +11,12 @@ class BlackSheepS3MediaStorage(S3Boto3Storage):
     location = "media/"
 
     def url(self, name, parameters=None, expire=600, http_method=None):
-        s3_client = boto3.client("s3")
-        response = s3_client.generate_presigned_url(
-            "get_object",
-            Params={
-                "Bucket": settings.AWS_STORAGE_BUCKET_NAME,
-                "Key": f"{self.location}{name}",
-            },
-            ExpiresIn=expire,
+        params = {
+            "Bucket": settings.AWS_STORAGE_BUCKET_NAME,
+            "Key": f"{self.location}{name}",
+        }
+        resp = self.bucket.meta.client.generate_presigned_url(
+            "get_object", Params=params, ExpiresIn=expire, HttpMethod=http_method
         )
 
-        return response
+        return resp

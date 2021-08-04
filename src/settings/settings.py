@@ -168,7 +168,7 @@ if AWS_STORAGE_BUCKET_NAME is not None:
         "ServerSideEncryption": "AES256",
     }
     AWS_IS_GZIPPED = True
-    AWS_S3_REGION_NAME = "eu-west-1"
+    AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", default="eu-west-1")
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
     STATICFILES_STORAGE = "aws.storages.BlackSheepS3StaticStorage"
 
