@@ -160,6 +160,7 @@ if env.bool("LOG_DB", False):
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default=None)
+
 if AWS_STORAGE_BUCKET_NAME is not None:
     AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
     AWS_S3_OBJECT_PARAMETERS = {
@@ -167,6 +168,7 @@ if AWS_STORAGE_BUCKET_NAME is not None:
         "ServerSideEncryption": "AES256",
     }
     AWS_IS_GZIPPED = True
+    AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", default="eu-west-1")
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
     STATICFILES_STORAGE = "aws.storages.BlackSheepS3StaticStorage"
 
@@ -217,6 +219,5 @@ if env("ROLLBAR_ENABLED", default=False):
 
 # Celery
 CELERY_TASK_ALWAYS_EAGER = env("CELERY_ALWAYS_EAGER")
-CELERY_BROKER_HOST = env("CELERY_BROKER_HOST")
 CELERY_RESULT_BACKEND = "django-db"
-CELERY_BROKER_URL = f"redis://{CELERY_BROKER_HOST}:6379/0"
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")

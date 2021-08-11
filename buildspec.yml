@@ -9,7 +9,7 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   pre_build:
     commands:
-      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+      - docker login -u gonczor -p $DOCKER_PASSWORD
   build:
     commands:
       - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 941606308749.dkr.ecr.eu-central-1.amazonaws.com
