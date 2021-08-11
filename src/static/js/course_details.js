@@ -110,15 +110,25 @@ const CourseDetailsApp = {
             this.selectedAnswerId = event.target.id;
         },
         moveToNextQuestion(){
+            this.clearAnswerLabels();
             if (this.testQuestionIndex < this.testQuestions.length)
                 this.testQuestionIndex++;
             if(!this.isBeyondLastQuestion())
                 this.setCurrentTestQuestion();
         },
         moveToPreviousQuestion() {
-            if(this.testQuestionIndex > 1)
+            this.clearAnswerLabels();
+            if(this.testQuestionIndex > 0)
                 this.testQuestionIndex--;
             this.setCurrentTestQuestion();
+        },
+        clearAnswerLabels(){
+            for (const answer of this.currentTestQuestion.answers) {
+                let answerLabel = document.getElementById('answer-' + answer.id);
+                answerLabel.classList.remove('correct-answer');
+                answerLabel.classList.remove('incorrect-answer');
+                document.getElementById(answer.id).checked = false;
+            }
         },
         setCurrentTestQuestion() {
             this.currentTestQuestion = this.testQuestions[this.testQuestionIndex];
