@@ -180,6 +180,13 @@ else:
     MEDIA_URL = "/media/"
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
+
+if EMAIL_BACKEND != "django.core.mail.backends.console.EmailBackend":
+    AWS_SES_REGION_NAME = 'eu-central-1'
+    AWS_SES_REGION_ENDPOINT = 'email.eu-central-1.amazonaws.com'
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 # DRF
