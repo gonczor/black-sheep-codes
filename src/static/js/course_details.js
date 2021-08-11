@@ -118,7 +118,7 @@ const CourseDetailsApp = {
         },
         moveToPreviousQuestion() {
             this.clearAnswerLabels();
-            if(this.testQuestionIndex > 1)
+            if(this.testQuestionIndex > 0)
                 this.testQuestionIndex--;
             this.setCurrentTestQuestion();
         },
