@@ -12,3 +12,5 @@ __pycache__/
 dmypy.json
 
 media/
+
+.DS_Store/
