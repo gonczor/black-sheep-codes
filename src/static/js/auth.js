@@ -12,7 +12,14 @@ window.addEventListener( "load", function () {
         }
         alert( message );
       } else {
-        window.location = '/login/'
+        let accountCreationToast = document.getElementById('accountCreationToast');
+        accountCreationToast.className = "show";
+        setTimeout(
+  function(){
+            accountCreationToast.className = accountCreationToast.className.replace("show", "");
+            },
+          3000
+        );
       }
     });
 

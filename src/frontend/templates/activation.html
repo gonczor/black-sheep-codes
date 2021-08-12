@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <p>Your account has been activated. You can now <a href="{% url 'frontend:login' %}" class="login-link">log in</a></p>
+    <p>Happy hacking!</p>
+{% endblock content %}
+
+{% block scripts %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/activation.css' %}">
+{% endblock scripts %}
