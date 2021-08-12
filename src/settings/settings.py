@@ -34,6 +34,7 @@ SECRET_KEY = retriever.retrieve("SECRET_KEY")
 
 
 ALLOWED_HOSTS = ["*"]
+HOST = env("HOST", default="http://localhost:8000/")
 
 
 # Application definition
