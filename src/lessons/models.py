@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import IntegrityError
 from django.db.models import (
     CASCADE,
@@ -99,8 +100,18 @@ class Answer(Model):
 
 class CompletedLesson(Model):
     lesson = ForeignKey(BaseLesson, on_delete=CASCADE)
-    user = ForeignKey(User, on_delete=CASCADE)
+    user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
     created = DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ("lesson", "user")
+
+
+class Comment(Model):
+    lesson = ForeignKey(BaseLesson, on_delete=CASCADE)
+    author = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
+    created = DateTimeField(auto_now_add=True, db_index=True)
+    text = CharField(max_length=1024, blank=False)
+
+    class Meta:
+        ordering = ("-created",)
