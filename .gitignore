@@ -1,4 +1,7 @@
 .idea/
+.vscode
+venv/
+.python-version
 ### Python ###
 __pycache__/
 *.py[cod]
