@@ -14,11 +14,14 @@ from rest_framework.viewsets import ModelViewSet
 from common.exceptions import ProcessingApiException, ProcessingException
 from lessons.models import BaseLesson
 from lessons.permissions import (
+    CommentDeletePermission,
+    CommentSoftDeletePermission,
+    CommentUpdatePermission,
     LessonCreatePermission,
     LessonDeletePermission,
     LessonUpdatePermission,
 )
-from lessons.serializers import BaseLessonSerializer, ListLessonsSerializer
+from lessons.serializers import BaseLessonSerializer, CommentSerializer, ListLessonsSerializer
 
 
 class LessonViewSet(ModelViewSet):
@@ -78,3 +81,14 @@ class LessonViewSet(ModelViewSet):
         lesson = self.get_object()
         lesson.revert_complete(user=self.request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CommentViewSet(ModelViewSet):
+    serializer_class = CommentSerializer
+
+    def get_permissions(self):
+        permission_classes = self.permission_classes
+        # Default (IsAuthenticatedPermission) for create and read.
+        if self.action == "update":
+            # TODO: generic update for moderators or update own comment. Text only!!!
+            permission_classes = [IsAuthenticated, CommentUpdatePermission]
