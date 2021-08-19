@@ -4,7 +4,7 @@ from django.test import TestCase
 from parameterized import parameterized
 
 from common.exceptions import ProcessingException
-from lessons.models import BaseLesson, Exercise, Lesson, Test
+from lessons.models import BaseLesson, Exercise, Lesson, Test, Comment
 from lessons.tests import BaseLessonTestCase
 
 
@@ -79,3 +79,13 @@ class LessonModelsTestCase(BaseLessonTestCase, TestCase):
 
         for lesson in BaseLesson.objects.all().with_completed_annotations(user=user):
             self.assertTrue(lesson.is_completed)
+
+
+class CommentTestCase(BaseLessonTestCase, TestCase):
+    def test_does_not_list_deleted_by_default(self):
+        Comment.objects.create(lesson=self.lesson, deleted=True)
+        self.assertEqual(Comment.objects.count(), 0)
+
+    def test_lists_deleted_with_deleted_manager(self):
+        Comment.objects.create(lesson=self.lesson, deleted=True)
+        self.assertEqual(Comment.deleted_objects.count(), 1)

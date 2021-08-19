@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import IntegrityError
 from django.db.models import (
     CASCADE,
@@ -13,6 +14,8 @@ from django.db.models import (
     TextField,
     Value,
     When,
+    Manager,
+    SET_NULL,
 )
 from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
@@ -104,3 +107,36 @@ class CompletedLesson(Model):
 
     class Meta:
         unique_together = ("lesson", "user")
+
+
+class CommentsManager(Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted=False)
+
+
+class DeletedCommentsManager(Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted=True)
+
+
+class Comment(Model):
+    lesson = ForeignKey(BaseLesson, on_delete=CASCADE)
+    created = DateTimeField(auto_now_add=True, db_index=True)
+    author = ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=SET_NULL, related_name="comments", null=True
+    )
+    text = CharField(max_length=1024, blank=True)
+    deleted = BooleanField(default=False)
+
+    class Meta:
+        ordering = ("-created",)
+        permissions = [
+            ("soft_delete_comment", "Can soft delete comment."),
+        ]
+
+    def soft_delete(self):
+        self.deleted = True
+        self.save()
+
+    objects = CommentsManager()
+    deleted_objects = DeletedCommentsManager()
