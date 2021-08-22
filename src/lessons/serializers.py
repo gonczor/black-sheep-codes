@@ -7,7 +7,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_polymorphic.serializers import PolymorphicSerializer
 
 from auth_ex.models import User
-from lessons.models import Answer, BaseLesson, Exercise, Lesson, Test, TestQuestion, Comment
+from lessons.models import Answer, BaseLesson, Comment, Exercise, Lesson, Test, TestQuestion
 
 
 class LessonSerializer(ModelSerializer):
@@ -116,16 +116,37 @@ class ListLessonsSerializer(ModelSerializer):
         return lesson.is_completed_by(user=self.context["user"])
 
 
-class CommentSerializer(ModelSerializer):
+class CommentCreateSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        fields = "text"
+        fields = ("text", "lesson")
         read_only_fields = (
             "id",
             "author",
             "created",
         )
 
-    def create(self, validated_data: dict, author: User) -> Comment:
-        validated_data["author"] = author
+    def create(self, validated_data: dict) -> Comment:
+        validated_data["author"] = self.context["user"]
         return super().create(validated_data)
+
+
+class CommentUpdateSerializer(ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ("text",)
+
+
+class CommentReadSerializer(ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = (
+            "id",
+            "author",
+            "text",
+        )
+        read_only_fields = (
+            "id",
+            "author",
+            "text",
+        )

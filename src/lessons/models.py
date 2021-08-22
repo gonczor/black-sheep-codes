@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import IntegrityError
 from django.db.models import (
     CASCADE,
+    SET_NULL,
     BooleanField,
     Case,
     CharField,
@@ -9,13 +10,12 @@ from django.db.models import (
     Exists,
     FileField,
     ForeignKey,
+    Manager,
     Model,
     OuterRef,
     TextField,
     Value,
     When,
-    Manager,
-    SET_NULL,
 )
 from polymorphic.managers import PolymorphicManager
 from polymorphic.models import PolymorphicModel
@@ -140,3 +140,6 @@ class Comment(Model):
 
     objects = CommentsManager()
     deleted_objects = DeletedCommentsManager()
+
+    def is_author(self, user) -> bool:
+        return self.author == user

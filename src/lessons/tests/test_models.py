@@ -4,7 +4,7 @@ from django.test import TestCase
 from parameterized import parameterized
 
 from common.exceptions import ProcessingException
-from lessons.models import BaseLesson, Exercise, Lesson, Test, Comment
+from lessons.models import BaseLesson, Comment, Exercise, Lesson, Test
 from lessons.tests import BaseLessonTestCase
 
 

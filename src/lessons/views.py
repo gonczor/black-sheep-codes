@@ -4,7 +4,6 @@ from django.db import transaction
 from django.db.models import QuerySet
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -12,16 +11,21 @@ from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from common.exceptions import ProcessingApiException, ProcessingException
-from lessons.models import BaseLesson
+from lessons.models import BaseLesson, Comment
 from lessons.permissions import (
-    CommentDeletePermission,
     CommentSoftDeletePermission,
     CommentUpdatePermission,
     LessonCreatePermission,
     LessonDeletePermission,
     LessonUpdatePermission,
 )
-from lessons.serializers import BaseLessonSerializer, CommentSerializer, ListLessonsSerializer
+from lessons.serializers import (
+    BaseLessonSerializer,
+    CommentCreateSerializer,
+    CommentReadSerializer,
+    CommentUpdateSerializer,
+    ListLessonsSerializer,
+)
 
 
 class LessonViewSet(ModelViewSet):
@@ -84,11 +88,33 @@ class LessonViewSet(ModelViewSet):
 
 
 class CommentViewSet(ModelViewSet):
-    serializer_class = CommentSerializer
-
     def get_permissions(self):
         permission_classes = self.permission_classes
         # Default (IsAuthenticatedPermission) for create and read.
-        if self.action == "update":
-            # TODO: generic update for moderators or update own comment. Text only!!!
+        if self.action in {"update", "partial_update"}:
             permission_classes = [IsAuthenticated, CommentUpdatePermission]
+        elif self.action == "destroy":
+            permission_classes = [IsAuthenticated, CommentSoftDeletePermission]
+        return [permission() for permission in permission_classes]
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CommentCreateSerializer
+        elif self.action in {"update", "partial_update"}:
+            return CommentUpdateSerializer
+        else:
+            return CommentReadSerializer
+
+    def get_queryset(self) -> QuerySet:
+        return Comment.objects.all().prefetch_related("author")
+
+    def get_serializer_context(self):
+        return {"user": self.request.user}
+
+    @transaction.atomic()
+    def perform_create(self, serializer):
+        serializer.save()
+
+    @transaction.atomic()
+    def perform_destroy(self, comment: Comment):
+        comment.soft_delete()
