@@ -11,7 +11,7 @@ from rest_framework.test import APITestCase
 
 from courses.models import Course, CourseSection, CourseSignup
 from lessons.models import BaseLesson, Comment, Lesson
-from lessons.tests import BaseLessonTestCase
+from lessons.tests import BaseLessonTestCase, BaseCommentTestCase
 
 
 class LessonAPITestCase(BaseLessonTestCase, APITestCase):
@@ -139,19 +139,7 @@ class LessonAPITestCase(BaseLessonTestCase, APITestCase):
         return getattr(self.client, action)
 
 
-class CommentsApiTestCase(BaseLessonTestCase, APITestCase):
-    def setUp(self):
-        super().setUp()
-        User = get_user_model()
-        self.author = User.objects.create_user(
-            username="test", email="test@example.com", password="test"
-        )
-        self.comment = Comment.objects.create(
-            author=self.author, text="Some comment", lesson=self.lesson
-        )
-        self.list_url = reverse("lessons:comment-list")
-        self.detail_url = reverse("lessons:comment-detail", args=(self.comment.pk,))
-
+class CommentsApiTestCase(BaseCommentTestCase, APITestCase):
     def test_unauthenticated_access_to_list(self):
         response = self.client.get(self.list_url)
 
