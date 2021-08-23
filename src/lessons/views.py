@@ -88,6 +88,8 @@ class LessonViewSet(ModelViewSet):
 
 
 class CommentViewSet(ModelViewSet):
+    filterset_fields = ["lesson"]
+
     def get_permissions(self):
         permission_classes = self.permission_classes
         # Default (IsAuthenticatedPermission) for create and read.

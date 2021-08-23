@@ -4,8 +4,8 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 from courses.models import CourseSignup
-from lessons.models import Answer, Lesson, Test, TestQuestion
-from lessons.tests import BaseLessonTestCase
+from lessons.models import Answer, Lesson, Test, TestQuestion, Comment
+from lessons.tests import BaseLessonTestCase, BaseCommentTestCase
 
 
 class LessonAPITestCase(APITestCase, BaseLessonTestCase):
@@ -89,3 +89,30 @@ class LessonAPITestCase(APITestCase, BaseLessonTestCase):
         # Without prefetch there were 8.
         with self.assertNumQueries(5):
             self.client.get(self.lesson_create_url)
+
+
+class CommentsApiTestCase(APITestCase, BaseCommentTestCase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_authenticate(self.author)
+
+    def test_filter_by_lesson(self):
+        different_lesson = Lesson.objects.create(course_section=self.course_section)
+        Comment.objects.create(author=self.author, text="Something else", lesson=different_lesson)
+        url = self.list_url + f"?lesson={self.lesson.pk}"
+
+        response = self.client.get(url)
+
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], self.comment.pk)
+
+    def test_list_without_filtering(self):
+        different_lesson = Lesson.objects.create(course_section=self.course_section)
+        different_comment = Comment.objects.create(author=self.author, text="Something else", lesson=different_lesson)
+
+        response = self.client.get(self.list_url)
+
+        ids = [result["id"] for result in response.data["results"]]
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertIn(different_comment.pk, ids)
+        self.assertIn(self.comment.pk, ids)
