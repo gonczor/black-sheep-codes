@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import Dict
 
 from drf_writable_nested import WritableNestedModelSerializer
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import SerializerMethodField, CharField
 from rest_framework.serializers import ModelSerializer
 from rest_polymorphic.serializers import PolymorphicSerializer
 
@@ -150,3 +150,5 @@ class CommentReadSerializer(ModelSerializer):
             "author",
             "text",
         )
+
+    author = CharField(source="author.username")
