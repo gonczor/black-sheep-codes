@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from courses.models import Course, CourseSection
-from lessons.models import Exercise, Lesson, Test, Comment
+from lessons.models import Comment, Exercise, Lesson, Test
 
 
 class BaseLessonTestCase(TestCase):

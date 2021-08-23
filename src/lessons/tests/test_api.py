@@ -4,8 +4,8 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 from courses.models import CourseSignup
-from lessons.models import Answer, Lesson, Test, TestQuestion, Comment
-from lessons.tests import BaseLessonTestCase, BaseCommentTestCase
+from lessons.models import Answer, Comment, Lesson, Test, TestQuestion
+from lessons.tests import BaseCommentTestCase, BaseLessonTestCase
 
 
 class LessonAPITestCase(APITestCase, BaseLessonTestCase):
@@ -108,7 +108,9 @@ class CommentsApiTestCase(APITestCase, BaseCommentTestCase):
 
     def test_list_without_filtering(self):
         different_lesson = Lesson.objects.create(course_section=self.course_section)
-        different_comment = Comment.objects.create(author=self.author, text="Something else", lesson=different_lesson)
+        different_comment = Comment.objects.create(
+            author=self.author, text="Something else", lesson=different_lesson
+        )
 
         response = self.client.get(self.list_url)
 
@@ -122,7 +124,7 @@ class CommentsApiTestCase(APITestCase, BaseCommentTestCase):
 
         self.assertEqual(
             response.data["results"][0],
-            {"id": self.comment.pk, "author": self.author.username, "text": self.comment.text}
+            {"id": self.comment.pk, "author": self.author.username, "text": self.comment.text},
         )
 
     def test_create(self):

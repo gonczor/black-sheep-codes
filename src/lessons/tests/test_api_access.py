@@ -11,7 +11,7 @@ from rest_framework.test import APITestCase
 
 from courses.models import Course, CourseSection, CourseSignup
 from lessons.models import BaseLesson, Comment, Lesson
-from lessons.tests import BaseLessonTestCase, BaseCommentTestCase
+from lessons.tests import BaseCommentTestCase, BaseLessonTestCase
 
 
 class LessonAPITestCase(BaseLessonTestCase, APITestCase):
