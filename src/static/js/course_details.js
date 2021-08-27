@@ -23,8 +23,9 @@ const CourseDetailsApp = {
             );
             this.lessonDetails = response.data;
             if(this.isTest()){
-                this.setupTest()
+                this.setupTest();
             }
+            await this.loadComments();
         },
         setupTest(){
             this.testQuestionIndex = 0;
@@ -135,6 +136,35 @@ const CourseDetailsApp = {
         },
         isBeyondLastQuestion() {
             return this.testQuestionIndex === this.testQuestions.length;
+        },
+        // Comments
+        async loadComments(){
+            let response = await axios.get(
+                '/api/v1/comments/?leeson=' + this.lessonId,
+                {
+                    headers: {
+                        Authorization: 'Token ' + window.localStorage.token
+                    }
+                }
+            );
+            this.comments = response.data.results;
+        },
+        async sendComment(event){
+            let data = {
+                "text": this.commentText,
+                "lesson": this.lessonId
+            }
+            await axios.post(
+                '/api/v1/comments/',
+                data,
+                {
+                    headers: {
+                        Authorization: 'Token ' + window.localStorage.token
+                    }
+                }
+            );
+            this.commentText = "";
+            await this.loadComments();
         }
     },
     data() {
@@ -146,7 +176,9 @@ const CourseDetailsApp = {
             testQuestionIndex: 0,
             testQuestions: [],
             currentTestQuestion: null,
-            selectedAnswerId: null
+            selectedAnswerId: null,
+            commentText: "",
+            comments: []
         }
     },
     mounted() {
