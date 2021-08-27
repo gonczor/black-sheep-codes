@@ -78,3 +78,9 @@ p input {
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
+
+@media (max-width: 750px) {
+    .container {
+        padding: 1px;
+    }
+}

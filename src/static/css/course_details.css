@@ -29,3 +29,15 @@
 .incorrect-answer {
     background-color: var(--secondary-red);
 }
+
+.comment-box {
+    background-color: var(--primary-blue);
+    padding: 5px
+}
+
+.comment-author {
+    text-align: right;
+    font-style: italic;
+    color: var(--secondary-text-black);
+    padding: 5px;
+}

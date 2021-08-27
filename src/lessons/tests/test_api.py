@@ -4,8 +4,8 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 from courses.models import CourseSignup
-from lessons.models import Answer, Lesson, Test, TestQuestion
-from lessons.tests import BaseLessonTestCase
+from lessons.models import Answer, Comment, Lesson, Test, TestQuestion
+from lessons.tests import BaseCommentTestCase, BaseLessonTestCase
 
 
 class LessonAPITestCase(APITestCase, BaseLessonTestCase):
@@ -89,3 +89,82 @@ class LessonAPITestCase(APITestCase, BaseLessonTestCase):
         # Without prefetch there were 8.
         with self.assertNumQueries(5):
             self.client.get(self.lesson_create_url)
+
+
+class CommentsApiTestCase(APITestCase, BaseCommentTestCase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_authenticate(self.author)
+
+    def test_filter_by_lesson(self):
+        different_lesson = Lesson.objects.create(course_section=self.course_section)
+        Comment.objects.create(author=self.author, text="Something else", lesson=different_lesson)
+        url = self.list_url + f"?lesson={self.lesson.pk}"
+
+        response = self.client.get(url)
+
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], self.comment.pk)
+
+    def test_list_without_filtering(self):
+        different_lesson = Lesson.objects.create(course_section=self.course_section)
+        different_comment = Comment.objects.create(
+            author=self.author, text="Something else", lesson=different_lesson
+        )
+
+        response = self.client.get(self.list_url)
+
+        ids = [result["id"] for result in response.data["results"]]
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertIn(different_comment.pk, ids)
+        self.assertIn(self.comment.pk, ids)
+
+    def test_list_contents(self):
+        response = self.client.get(self.list_url)
+
+        self.assertEqual(
+            response.data["results"][0],
+            {"id": self.comment.pk, "author": self.author.username, "text": self.comment.text},
+        )
+
+    def test_create(self):
+        create_text = "This is a new comment"
+        data = {"lesson": self.lesson.pk, "text": create_text}
+
+        response = self.client.post(self.list_url, data=data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Comment.objects.count(), 2)
+        self.assertEqual(Comment.objects.first().text, create_text)
+        self.assertEqual(Comment.objects.first().author, self.author)
+
+    def test_delete(self):
+        User = get_user_model()
+        comment_pk = self.comment.pk
+        super_user = User.objects.create_user(
+            username="super", email="super@example.com", password="test", is_superuser=True
+        )
+        self.client.force_authenticate(super_user)
+
+        self.client.delete(self.detail_url)
+
+        self.assertTrue(Comment.deleted_objects.filter(id=comment_pk).exists())
+
+    def test_update(self):
+        new_text = "New comment message"
+        data = {"text": new_text}
+
+        self.client.patch(self.detail_url, data=data)
+
+        self.comment.refresh_from_db()
+        self.assertEqual(self.comment.text, new_text)
+
+    def test_update_with_lesson_id(self):
+        different_lesson = Lesson.objects.create(course_section=self.course_section)
+        data = {"text": "New comment message", "lesson": different_lesson.pk}
+
+        response = self.client.patch(self.detail_url, data=data)
+
+        self.comment.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.comment.lesson_id, self.lesson.pk)

@@ -79,6 +79,36 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="container">
+                            <!-- Header -->
+                            <div class="row m-2">
+                                <h2 class="text-center align-self-center">
+                                    Comments
+                                </h2>
+                            </div>
+                            <hr>
+                            <!-- write comment -->
+                            <div class="row m-2">
+                                <div class="m-2">
+                                    <textarea v-model="commentText" style="width: 100%" placeholder="Share your thoughts">{{ commentText }}</textarea>
+                                </div>
+                                <div class="m-2" v-on:click="sendComment()">
+                                    <button class="btn bg-blue">Send comment</button>
+                                </div>
+                            </div>
+                            <hr>
+                            <!-- List -->
+                            <div class="row m-2">
+                                <div v-for="comment in comments">
+                                    <div class="comment-box">
+                                        {{ comment.text }}
+                                    </div>
+                                    <div class="comment-author">
+                                        author: {{ comment.author }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -86,13 +116,18 @@
     </div>
 </div>
 
+
 {% endverbatim %}
 {% endblock content %}
 
 {% block scripts %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/course_details.css' %}">
-    <script src="https://unpkg.com/vue@next"></script>
+    {% if running_prod %}
+        <script src="https://unpkg.com/vue@3.2.6/dist/vue.global.prod.js"></script>
+    {% else %}
+        <script src="https://unpkg.com/vue@3.2.6"></script>
+    {% endif %}
     <script src="{% static 'js/axios.min.js' %}"></script>
     <script src="{% static 'js/course_details.js' %}"></script>
 {% endblock scripts %}
