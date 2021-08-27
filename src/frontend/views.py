@@ -7,6 +7,7 @@ from rest_framework import status
 
 class ActivationView(TemplateView):
     template_name = "activation.html"
+    extra_context = {"running_prod": not settings.DEBUG}
 
     def get(self, request, uid, token, **kwargs):
         payload = {"uid": uid, "token": token}

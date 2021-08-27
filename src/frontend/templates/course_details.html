@@ -123,7 +123,11 @@
 {% block scripts %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/course_details.css' %}">
-    <script src="https://unpkg.com/vue@next"></script>
+    {% if running_prod %}
+        <script src="https://unpkg.com/vue@3.2.6/dist/vue.global.prod.js"></script>
+    {% else %}
+        <script src="https://unpkg.com/vue@3.2.6"></script>
+    {% endif %}
     <script src="{% static 'js/axios.min.js' %}"></script>
     <script src="{% static 'js/course_details.js' %}"></script>
 {% endblock scripts %}
