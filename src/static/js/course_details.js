@@ -140,7 +140,7 @@ const CourseDetailsApp = {
         // Comments
         async loadComments(){
             let response = await axios.get(
-                '/api/v1/comments/?leeson=' + this.lessonId,
+                '/api/v1/comments/?lesson=' + this.lessonId,
                 {
                     headers: {
                         Authorization: 'Token ' + window.localStorage.token
