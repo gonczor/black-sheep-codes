@@ -1,6 +1,8 @@
 import io
 from typing import TYPE_CHECKING
 
+from settings.celery import app
+
 from celery import shared_task
 from PIL import Image
 
@@ -49,3 +51,22 @@ def _save_resized(new_image: Image, course: "Course"):
     name = "".join(name_parts[:-1]) + "_small" + "." + name_parts[-1]
     course.small_cover_image.save(name, output, save=False)
     course.save()
+
+
+def publish_message():
+    with app.producer_pool.acquire(block=True) as producer:
+        producer.publish(
+            body={"TEST": "OK"},
+            exchange='myexchange',
+            routing_key='mykey',
+        )
+
+
+@shared_task()
+def consume_message_1(*args, **kwargs):
+    print(f"## 1 ##\nARGS: {args}\nKWARGS: {kwargs}")
+
+
+@shared_task
+def consume_message_2(*args, **kwargs):
+    print(f"## 2 @@\nARGS: {args}\nKWARGS: {kwargs}")

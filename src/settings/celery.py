@@ -1,6 +1,7 @@
 import os
 
 import environ
+import kombu
 from celery import Celery
 from celery.signals import task_failure
 
@@ -28,3 +29,37 @@ if bool(env.bool("ROLLBAR_ENABLED", False)):
     @task_failure.connect
     def handle_task_failure(**kw):
         rollbar.report_exc_info(extra_data=kw)
+
+
+with app.pool.acquire(block=True) as conn:
+    exchange = kombu.Exchange(
+        name='myexchange',
+        type='fanout',
+        durable=True,
+        channel=conn,
+    )
+    exchange.declare()
+    queue = kombu.Queue(
+        name='myqueue',
+        exchange=exchange,
+        routing_key='mykey',
+        channel=conn,
+        # message_ttl=600,
+        queue_arguments={
+            'x-queue-type': 'classic'
+        },
+        durable=True
+    )
+    queue.declare()
+    queue = kombu.Queue(
+        name='myotherqueue',
+        exchange=exchange,
+        routing_key='mykey',
+        channel=conn,
+        # message_ttl=600,
+        queue_arguments={
+            'x-queue-type': 'classic'
+        },
+        durable=True
+    )
+    queue.declare()
