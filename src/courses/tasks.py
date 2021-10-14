@@ -60,13 +60,3 @@ def publish_message():
             exchange='myexchange',
             routing_key='mykey',
         )
-
-
-@shared_task()
-def consume_message_1(*args, **kwargs):
-    print(f"## 1 ##\nARGS: {args}\nKWARGS: {kwargs}")
-
-
-@shared_task
-def consume_message_2(*args, **kwargs):
-    print(f"## 2 @@\nARGS: {args}\nKWARGS: {kwargs}")

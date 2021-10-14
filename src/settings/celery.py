@@ -2,7 +2,8 @@ import os
 
 import environ
 import kombu
-from celery import Celery
+
+from celery import Celery, bootsteps
 from celery.signals import task_failure
 
 env = environ.Env()
@@ -33,33 +34,69 @@ if bool(env.bool("ROLLBAR_ENABLED", False)):
 
 with app.pool.acquire(block=True) as conn:
     exchange = kombu.Exchange(
-        name='myexchange',
-        type='fanout',
+        name="myexchange",
+        type="direct",
         durable=True,
         channel=conn,
     )
     exchange.declare()
-    queue = kombu.Queue(
-        name='myqueue',
+    queue1 = kombu.Queue(
+        name="myqueue",
         exchange=exchange,
-        routing_key='mykey',
+        routing_key="mykey",
         channel=conn,
         # message_ttl=600,
-        queue_arguments={
-            'x-queue-type': 'classic'
-        },
+        # queue_arguments={
+        #     "x-queue-type": "classic"
+        # },
         durable=True
     )
-    queue.declare()
-    queue = kombu.Queue(
-        name='myotherqueue',
+    queue1.declare()
+    queue2 = kombu.Queue(
+        name="myotherqueue",
         exchange=exchange,
-        routing_key='mykey',
+        routing_key="mykey",
         channel=conn,
         # message_ttl=600,
-        queue_arguments={
-            'x-queue-type': 'classic'
-        },
+        # queue_arguments={
+        #     "x-queue-type": "classic"
+        # },
         durable=True
     )
-    queue.declare()
+    queue2.declare()
+
+
+    class MyConsumer1(bootsteps.ConsumerStep):
+        def get_consumers(self, channel):
+            return [
+                    kombu.Consumer(
+                        channel,
+                        queues=[queue1],
+                        callbacks=[self.handle],
+                        accept=["json"]
+                )
+            ]
+
+        def handle(self, body, message):
+            print(f"\n### 1 ###\nBODY: {body}\nMESSAGE: {message}\n#########\n")
+            message.ack()
+
+
+    class MyConsumer2(bootsteps.ConsumerStep):
+        def get_consumers(self, channel):
+            return [
+                kombu.Consumer(
+                    channel,
+                    queues=[queue2],
+                    callbacks=[self.handle],
+                    accept=["json"]
+                )
+            ]
+
+        def handle(self, body, message):
+            print(f"\n### 2 ###\nBODY: {body}\nMESSAGE: {message}\n#########\n")
+            message.ack()
+
+
+    app.steps["consumer"].add(MyConsumer1)
+    app.steps["consumer"].add(MyConsumer2)

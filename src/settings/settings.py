@@ -233,7 +233,7 @@ if env("ROLLBAR_ENABLED", default=False):
 CELERY_TASK_ALWAYS_EAGER = env("CELERY_ALWAYS_EAGER")
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_BROKER_URL = env("CELERY_BROKER_URL")
-CELERY_TASK_ROUTES = {
-    "courses.tasks.consume_message_1": {"queue": "myqueue", "routing_key": "mykey"},
-    "courses.tasks.consume_message_2": {"queue": "myotherqueue", "routing_key": "mykey"},
-}
+# CELERY_TASK_ROUTES = {
+#     "courses.tasks.consume_message_1": {"queue": "myqueue"},
+#     "courses.tasks.consume_message_2": {"queue": "myotherqueue"},
+# }
