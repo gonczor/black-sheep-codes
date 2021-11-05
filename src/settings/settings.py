@@ -233,3 +233,13 @@ if env("ROLLBAR_ENABLED", default=False):
 CELERY_TASK_ALWAYS_EAGER = env("CELERY_ALWAYS_EAGER")
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+
+# Similar as for storages. If we use S3 buckets, we use AWS SQS. Otherwise. Local.
+if AWS_STORAGE_BUCKET_NAME is not None:
+    CELERY_BROKER_TRANSPORT_OPTIONS = {
+        "predefined_queues": {
+            "celery": {
+                "url": env("SQS_DEFAULT_QUEUE_URL"),
+            }
+        }
+    }
