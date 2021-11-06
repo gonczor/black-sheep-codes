@@ -92,8 +92,8 @@
                                 <div class="m-2">
                                     <textarea v-model="commentText" style="width: 100%" placeholder="Share your thoughts">{{ commentText }}</textarea>
                                 </div>
-                                <div class="m-2" v-on:click="sendComment()">
-                                    <button class="btn bg-blue">Send comment</button>
+                                <div class="m-2">
+                                    <button class="btn bg-blue right" v-on:click="sendComment()">Send comment</button>
                                 </div>
                             </div>
                             <hr>
