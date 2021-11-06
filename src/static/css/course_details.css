@@ -41,3 +41,7 @@
     color: var(--secondary-text-black);
     padding: 5px;
 }
+
+.right {
+    float: right
+}
