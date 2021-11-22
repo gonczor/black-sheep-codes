@@ -8,10 +8,14 @@ from django.db.models import (
     Model,
     TextField,
 )
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete, post_save, pre_save
 
 from courses.querysets import CourseQuerySet
-from courses.signals import cover_image_resize_callback, delete_cover_images
+from courses.signals import (
+    cover_image_resize_callback,
+    delete_cover_images,
+    delete_images_if_changed,
+)
 
 
 def get_course_upload_directory(course: "Course", filename: str) -> str:
@@ -53,3 +57,4 @@ class CourseSignup(Model):
 
 post_save.connect(cover_image_resize_callback, sender=Course)
 post_delete.connect(delete_cover_images, sender=Course)
+pre_save.connect(delete_images_if_changed, sender=Course)
