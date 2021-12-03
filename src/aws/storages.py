@@ -10,7 +10,7 @@ class BlackSheepS3StaticStorage(S3StaticStorage):
 class BlackSheepS3MediaStorage(S3Boto3Storage):
     location = "media/"
 
-    def url(self, name, parameters=None, expire=600, http_method=None):
+    def url(self, name, parameters=None, expire=600, http_method="GET"):
         params = {
             "Bucket": settings.AWS_STORAGE_BUCKET_NAME,
             "Key": f"{self.location}{name}",

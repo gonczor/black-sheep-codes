@@ -171,6 +171,7 @@ if AWS_STORAGE_BUCKET_NAME is not None:
     }
     AWS_IS_GZIPPED = True
     AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", default="eu-west-1")
+    AWS_S3_MAX_MEMORY_SIZE = 2.5 * 1024 * 1024  # 2.5 MB
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
     STATICFILES_STORAGE = "aws.storages.BlackSheepS3StaticStorage"
 

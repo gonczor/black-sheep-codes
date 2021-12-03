@@ -15,11 +15,14 @@ def resize_course_cover_image(course_id: int):
     from courses.models import Course
     from courses.signals import cover_image_resize_callback
 
+    course = Course.objects.get(id=course_id)
+    if _does_not_have_image(course):
+        return
+    if not _image_changed(course):
+        return
     try:
         # Do not call signal again
         signals.post_save.disconnect(cover_image_resize_callback, sender=Course)
-
-        course = Course.objects.get(id=course_id)
 
         with Image.open(course.cover_image) as original_image:
             new_width, new_height = _get_small_size(original_image)
@@ -49,3 +52,20 @@ def _save_resized(new_image: Image, course: "Course"):
     name = "".join(name_parts[:-1]) + "_small" + "." + name_parts[-1]
     course.small_cover_image.save(name, output, save=False)
     course.save()
+
+
+def _does_not_have_image(course: "Course") -> bool:
+    return course.cover_image.name == ""
+
+
+def _image_changed(course: "Course") -> bool:
+    """
+    The small cover image has the same name appended by _small suffix.
+    If the name of the small image name does not start with the full
+    image name, it means that a change has taken place.
+    """
+    if course.small_cover_image.name == "":
+        return True
+    full_image_base_name = course.cover_image.name.split("/")[-1].split(".")[0]
+    small_image_base_name = course.small_cover_image.name.split("/")[-1].split(".")[0]
+    return not small_image_base_name.startswith(full_image_base_name)
