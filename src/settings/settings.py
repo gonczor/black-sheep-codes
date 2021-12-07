@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_celery_results",
     "django_filters",
+    "aws_xray_sdk.ext.django",
     "djoser",
     "rest_framework",
     "rest_framework.authtoken",
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "aws_xray_sdk.ext.django.middleware.XRayMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -237,9 +239,18 @@ CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 # Similar as for storages. If we use S3 buckets, we use AWS SQS. Otherwise. Local.
 if AWS_STORAGE_BUCKET_NAME is not None:
     CELERY_BROKER_TRANSPORT_OPTIONS = {
+        "region": "eu-central-1",
         "predefined_queues": {
             "celery": {
                 "url": env("SQS_DEFAULT_QUEUE_URL"),
             }
         }
+    }
+
+
+if AWS_STORAGE_BUCKET_NAME is not None:
+    XRAY_RECORDER = {
+        "AWS_XRAY_DAEMON_ADDRESS": "x-ray:2000",
+        "AWS_XRAY_TRACING_NAME": env("TRACING_NAME"),
+        "AWS_XRAY_CONTEXT_MISSING": "LOG_ERROR"
     }

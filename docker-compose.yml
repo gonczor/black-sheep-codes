@@ -23,6 +23,8 @@ services:
     depends_on:
       - db
       - redis
+    environment:
+      - TRACING_NAME=web
   redis:
     image: redis:6.0-alpine
     ports:
@@ -38,5 +40,15 @@ services:
       - ./src/:/app/
     depends_on:
       - redis
+    environment:
+      - TRACING_NAME=celery
+  x-ray:
+    image: public.ecr.aws/xray/aws-xray-daemon:latest
+    ports:
+      - "2000:2000/udp"
+    environment:
+      - AWS_REGION=eu-central-1
+    env_file:
+      - .env
 volumes:
   learn-web-dev-data:
